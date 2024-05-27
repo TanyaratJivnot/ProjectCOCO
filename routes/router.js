@@ -714,10 +714,11 @@ router.get('/', (req, res)=>{
     res.render('login.ejs', { error: {} });
 })
 router.post('/', async (req, res, next) => {
+    const startTime = Date.now();
     const username = req.body.username;
     const password  = req.body.password;
 
-    if (!username === "" || !password === "") {
+    if (!username || !password) {
         return res.render('login.ejs', { error: { msg: 'Please enter both username and password' } });
     }
 
@@ -737,8 +738,11 @@ router.post('/', async (req, res, next) => {
         res.redirect('/home');
     } catch (err) {
         next(err);
+    } finally {
+        console.log(`Login request completed in ${Date.now() - startTime}ms`);
     }
 });
+
 
 
 module.exports = router
