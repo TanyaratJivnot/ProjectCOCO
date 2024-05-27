@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar</title>
+    <link rel="stylesheet" href="/css/nav.css">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="warpper sticky-top">
+        <div class="navbar">
+            <div class="navbar_left">
+                <div class="logo">
+                    <a href=""><img src="/img/logo_new.png" alt=""></a>
+                </div>
+                <div class="menu">
+                    <a href="/home">HOME</a>
+                    <a href="/stock">STOCK PRODUCT</a>
+                    <a href="/staff">STAFF</a>
+                </div>
+            </div>
+            <div class="navbar_right">
+                <div class="notifications">
+                    <div class="icon_warp">
+                        <i class="fa-solid fa-bell"></i>
+                    </div>
+                    <% if (notificate_count > 0) { %>
+                        <span id="count_notificate">
+                            <p id="count"><%= notificate_count %></p>
+                        </span>
+                    <% } %>                    
+
+                    <div class="notifications_dd scrollbar_1" id="scrollbar1" style="display: none;">
+                        <ul class="notifications_ul">
+                            <% notificate_items.forEach(function(item) { %>
+                                <li class="success">
+                                    <div class="notify_icon">
+                                        <span class="icon">
+                                            <img src="<%= item.img %>" alt="">
+                                        </span> 
+                                    </div>
+                                    <div class="notify_data">
+                                        <div class="title">
+                                            <%= item.name %>
+                                        </div>
+                                        <div class="sub_title">
+                                            <%= item.des %>
+                                        </div>
+                                    </div>
+                                    <div class="notify_status">
+                                        <p style="color: #12B495;"><%= item.time %>น.</p>
+                                    </div>
+                                </li>
+                            <% }); %>
+                        </ul>
+                    </div>
+                </div>
+                <div class="logout">
+                    <a href="/" class="icon_warp"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <!-- JavaScript includes for jQuery, Popper.js, and Bootstrap JS -->
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+ 
+     <!-- Chart.js via CDN -->
+     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+     <script src="/js/nav.js"></script>
+</body>
+
+</html>

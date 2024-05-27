@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/insert_Emp.css">
+     <!-- Font Awesome CSS -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+     <!-- Bootstrap CSS -->
+     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+     <!-- Bootstrap Icons -->
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+</head>
+<body>
+    <div class="popup" id="popup-1">
+        <div class="overlay">
+            <div class="content">
+                <span class="alert_icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                <p>คุณต้องการยกเลิกการบันทึกข้อมูลพนักงาน ใช่หรือไม่?</p>
+                <div class="alert-buttons">
+                    <button id="cancel-btn" class="alert-btn cancel-btn" onclick="togglePopup()">ยกเลิก</button>
+                     <a href="/staff"><button id="confirm-btn" class="alert-btn confirm-btn">ตกลง</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- navebar -->
+    <%- include('navbar', { notificate_items: notificate_items }) %>
+   
+    
+    <!-- form -->
+    <div class="dashbord">
+        <div class="row" id="dash_top">
+            <div class="col-12" id="trend">
+                <div class="container">
+                    <div class="row mt-4">
+                        <div class="col">
+                            <h1>เพิ่มพนักงาน</h1>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <form id="add-employee-form" class="box-form" action="/addEmployee" method="post" enctype="multipart/form-data">
+                                <div class="row g-2 mt-5 mb-3">
+                                    <div class="col-6">
+                                        <label class="form-label">ชื่อ-นามสกุล</label>
+                                        <input type="text" class="form-control" name="Name" required>
+                                        <span style="display: none;" id="error"></span>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label">ชื่อ(username)</label>
+                                        <input type="text" class="form-control" name="Username" required>
+                                        <span style="display: none;" id="error"></span>
+                                    </div>
+                                </div>
+                                <div class="row g-2 mt-5 mb-3">
+                                    <div class="col-6">
+                                        <label class="form-label">พาสเวิร์ด</label>
+                                        <input type="text" class="form-control" name="Password" required>
+                                        <span style="display: none;" id="error"></span>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label">ที่อยู่</label>
+                                        <input type="text" class="form-control" name="Address_Staff" required>
+                                        <span style="display: none;" id="error"></span>
+                                    </div>
+                                </div>
+                                <div class="row g-2 mt-5 mb-3">
+                                    <div class="col-6">
+                                        <label class="form-label">เบอร์โทร</label>
+                                        <input type="text" class="form-control" name="Tel_Staff" required>
+                                        <span style="display: none;" id="error"></span>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label">เลขบัตรประชาชน</label>
+                                        <input type="text" class="form-control" name="ID_Card" required>
+                                        <span style="display: none;" id="error"></span>
+                                    </div>
+                                </div>
+                              
+                                <div class="mt-5 mb-3">
+                                    <label class="form-label">รูปพนักงาน</label>
+                                    <div class="upload">
+                                        <button type="button" class="btn btn_file">
+                                            <img id="default-image" src="/img/iconImg.png" alt="">
+                                            <input type="file" id="file-input" name="IMG">
+                                        </button>
+                                        <!-- Image preview -->
+                                        <img id="image-preview" src="" alt="Image Preview" style="display: none;">
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="mt-5 mb-3">
+                                <div class="row">
+                                  <div class="col d-flex justify-content-end">
+                                      <a class="btn" id="btn_close" onclick="togglePopup()">ยกเลิก</a>
+                                      <a class="btn" id="btn_update">เพิ่มพนักงาน</a>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript includes for jQuery, Popper.js, and Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Chart.js via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/insert_Emp.js"></script>
+</body>
+</html>

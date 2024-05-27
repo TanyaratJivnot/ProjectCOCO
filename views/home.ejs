@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📶Home</title>
+    <link rel="stylesheet" href="/css/home.css">
+    <link rel="stylesheet" href="/css/calenda1.css">
+    <link rel="stylesheet" href="/css/calenda2.css">
+
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+</head>
+<body>
+    <%- include('navbar', { notificate_items: notificate_items }) %>
+    <!--  dashbord top -->
+    <div class="dashbord">
+        <div class="row" id="dash_top">
+            <div class="col-8" id="trend">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <!-- price value -->
+                            <p id="Sales"></p>
+                            <!-- Somewhere within your home.ejs file -->
+                        </div>
+                        <div class="col d-flex flex-row-reverse mt-2">
+                            <!-- Date -->                       
+                            <button class="btn" id="calenda">
+                                <div class="row d-flex">
+                                    <div class="col-10" style="padding: 0; text-align: center;">
+                                        <span class="txtDat">
+                                                         
+                                        </span>  
+                                    </div>
+                                    <div class="col-2" style="padding: 0;">
+                                        <i class="fa-solid fa-caret-down" id="dropdown"></i>
+                                    </div>
+                                </div>
+                            </button>
+                            <div class="calenda" id="calendarDiv1" style="display: none;">
+                                <div class="calendar"></div>
+                            </div>  
+                            <span id="txt_sales"><p>ยอดขาย</p></span>
+                        </div>
+                    </div>
+                    <div class="row mt-3" id="g-trend">
+                        <div class="col-12">
+                            <!-- trend -->
+                            <div class="container" id="chart-container" style="width: 1050px;">
+                                <canvas id="myChart"></canvas>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4" id="label">
+                <div class="container">
+                    <div class="row mb-4">
+                        <div class="col-12" id="label1">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col" id="icon_label">
+                                        <i class="bi bi-trophy-fill"></i>
+                                    </div>
+                                    <div class="col" id="txt_label">
+                                        <p class="txt_title">ยอดขายวันนี้</p>
+                                        <p class="txt_result" id="toDaySales"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-12" id="label2">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col" id="icon_label">
+                                        <i class="bi bi-cart-plus-fill"></i>
+                                    </div>
+                                    <div class="col" id="txt_label">
+                                        <p class="txt_title">สินค้าขายดี</p>
+                                        <p class="txt_result" id="popularproductSales""></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12" id="label3">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col" id="icon_label">
+                                        <i class="fa-solid <%= weatherIcon %>"></i>
+                                    </div>
+                                    <div class="col" id="txt_label">
+                                        <p class="txt_title">สภาพอากาศประจำวันนี้</p>
+                                        <p class="txt_result"> <%= temperature %>°C</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4" id="dash_bottom">
+            <!-- ยอดขายพนักงาน -->
+            <div class="col">
+                <div class="card custom-card">
+                    <div class="card-header" >
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-2 d-flex justify-content-end">
+                                    <a href="#" id="icon_bar"><i class="bi bi-bar-chart-fill"></i></a>
+                                </div>
+                                <div class="col-sm d-flex align-items-center">
+                                    <span id="txt_bottom">ยอดขายพนักงาน</span>
+                                </div>
+                                <div class="col-sm d-flex justify-content-end align-items-center">
+                                    <!-- <button class="btn" id="calenda_bottom">
+                                        <div class="row d-flex">
+                                            <div class="col-10" style="padding: 0; text-align: center;">
+                                                <span class="txtDat2">
+                                                                 
+                                                </span>  
+                                                </div>
+                                            <div class="col-2" style="padding: 0;">
+                                                <i class="fa-solid fa-caret-down" id="dropdown_bottom"></i>
+                                            </div>
+                                        </div>
+                                    </button>
+                                    <div class="calenda2" id="calendarDiv2" style="display: none;">
+                                        <div class="calendar2"></div>
+                                    </div>  -->  
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="container">
+                            <div class="data_nav">
+                                <div class="row d-flex align-items-center" id="row_data">
+                                    <div class="col">
+                                        <span id="txt_data">พนักงาน</span>
+                                    </div>
+                                    <div class="col text-center">
+                                        <a href="#"><i class="bi bi-cart-fill" id="icon_data"></i></a>
+                                    </div>
+                                    <div class="col d-flex justify-content-end">
+                                        <span id="txt_data">ยอดขาย</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body" style="padding-top: 0;">
+                        <div class="container">
+                            <ul class="list-group list-group-flush scrollbar_1" id="list-container">
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col">
+                                                <span id="txt_data1" class="name"></span>
+                                            </div>
+                                            <div class="col d-flex justify-content-center">
+                                                <span id="txt_data1" class="quantity"></span>
+                                            </div>
+                                            <div class="col d-flex justify-content-end" style="color: #12B495;">
+                                                <span id="txt_data2" class="totalSales"></span>
+                                            </div>
+                                        </div>
+                                    </li> 
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- กำไร -->
+            <div class="col">
+                <div class="card custom-card">
+                    <div class="card-header">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <span id="txt_bottom">รายการสินค้าขายดี</span>
+                                </div>
+                               <!--  <div class="col-sm d-flex justify-content-end align-items-center">
+                                    <button class="btn" id="calenda_bottom4">
+                                        <div class="row d-flex">
+                                            <div class="col-10" style="padding: 0; text-align: center;">
+                                                <span class="txtDat4">
+                                                                 
+                                                </span>  
+                                                </div>
+                                            <div class="col-2" style="padding: 0;">
+                                                <i class="fa-solid fa-caret-down" id="dropdown_bottom"></i>
+                                            </div>
+                                        </div>
+                                    </button>
+                                    <div class="calenda4" id="calendarDiv4" style="display: none;">
+                                        <div class="calendar4"></div>
+                                    </div>   
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="container">
+                            <ul class="list-group list-group-flush scrollbar_2" id="scrollbar2" style="height: 370px;">
+                                <canvas id="pieChart"></canvas>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+              <!-- ยอดขายตามช่องทาง -->
+              <div class="col">
+                <div class="card custom-card">
+                    <div class="card-header">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm">
+                                    <span id="txt_bottom">สินค้าคงเหลือวันนี้</span>
+                                </div>
+                                <div class="col-sm d-flex justify-content-end align-items-center">
+                                   <!--  <button class="btn" id="calenda_bottom3">
+                                        <div class="row d-flex">
+                                            <div class="col-10" style="padding: 0; text-align: center;">
+                                                <span class="txtDat3">
+                                                                 
+                                                </span>  
+                                                </div>
+                                            <div class="col-2" style="padding: 0;">
+                                                <i class="fa-solid fa-caret-down" id="dropdown_bottom"></i>
+                                            </div>
+                                        </div>
+                                    </button>
+                                    <div class="calenda3" id="calendarDiv3" style="display: none;">
+                                        <div class="calendar3"></div>
+                                    </div>  --> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="container">
+                            <ul class="list-group list-group-flush scrollbar_2" id="scrollbar2" style="height: 370px;">
+                                <canvas id="barChart"></canvas>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- JavaScript includes for jQuery, Popper.js, and Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Chart.js via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/calenda1.js"></script>
+<!--     <script src="/js/calenda2.js"></script> 
+    <script src="/js/calenda3.js"></script>
+    <script src="/js/calenda4.js"></script> -->
+</body>
+</html>

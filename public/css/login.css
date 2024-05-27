@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap');
+
+*{
+    margin: 0;
+    border: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body{
+    background-color: #F5F6F7 !important;
+    padding: 1.5rem 15rem;
+    width: 100%;
+}
+.login{
+    display: flex;
+    justify-content: center;
+    border-radius: 16px;
+    background: #FFF;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    height: 715px;
+    padding-top: 130px;
+}
+.form{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+p{
+    color: #777;
+    font-size: 15px;
+    font-weight: 700;
+}
+.name{
+    color: #454545;
+    padding: 0 20px;
+    border: 0px;
+    outline: 0px;
+    width: 450px;
+    height: 40px;
+    border-radius: 100px;
+    background: #FFF;
+    box-shadow: 3px 1px 4px 1px rgba(0, 0, 0, 0.25) inset;
+}
+.input-box{
+    width: 450px;
+    height: 40px;
+    border-radius: 100px;
+    background: #FFF;
+    box-shadow: 3px 1px 4px 1px rgba(0, 0, 0, 0.25) inset;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding:0 20px;
+}
+.input-box input{
+    border: 0px;
+    outline: 0px;
+    width: 400x;
+    height: 40px;
+    background: transparent;
+}
+.input-box i{
+    font-size: 20px;
+    cursor: pointer;
+    color: #454545;
+}
+.input-box i:hover{
+    color: #A9A9A9;
+    transition: .5s;
+}
+#btn{
+    width: 165px;
+    height: 54px;
+    border-radius: 3px;
+    background: #12B495;
+    text-align: center;
+    color: #FFF;
+    font-weight: 700;
+    font-size: 17px;
+    margin-top: 15px;
+    padding-top: 15px;
+}
+#btn:hover{
+    background: #777;
+    transition: .5s;
+    cursor: pointer;
+}
+
+.b1{
+    margin-bottom: 5px;
+}
+.b2{
+    margin-bottom: 5px;
+    margin-top: 30px;
+}

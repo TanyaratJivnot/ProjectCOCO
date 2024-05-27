@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📦stock product</title>
+    <link rel="stylesheet" href="/css/stock.css">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+</head>
+<body>
+    <%- include('navbar', { notificate_items: notificate_items }) %>
+    <div class="dashbord">
+        <div class="row" id="dash_top">
+            <div class="col-12" id="trend">
+                <div class="container">
+                   <div class="row mt-4">
+                    <div class="col-12">
+                        <h1 id="title_head1">ทำนายรายการสั่งซื้อล่วงหน้า</h1>
+                    </div>
+                   </div>
+                    <div class="row" id="tt">
+                        <div class="col-12 wrapper mt-2">
+                            <i class="fa-solid fa-angle-left" id="left"></i>
+                            <ul class="carousel1">
+                                <% list_predict_products.forEach(function(product) { %>
+                                    <div class="card p-3" id="block_item1">
+                                        <div draggable="false">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <i class="fa-brands fa-product-hunt" id="icon_P1"></i>
+                                                        </div>
+                                                        <div class="col d-flex justify-content-end">
+                                                            <!-- <i class="bi bi-plus-circle-fill" id="icon_add"></i> -->
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </div>
+                                            </div>
+                                            <div class="row mt-2">
+                                                <div class="col" id="data_T">
+                                                    <span style="color: #1E9168;
+                                                                 font-size: 25px;
+                                                                 font-weight: 700;">
+                                                        <%= product.NameProduct %>
+                                                    </span>
+                                                    <p style="color: #777;
+                                                              font-size: 20px;
+                                                              font-weight: 300;"></p>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col d-flex justify-content-end" id="data_b">
+                                                    <span style="color: #777;
+                                                                 font-size: 25px;
+                                                                 font-weight: 700;">
+                                                        <%= product.predicted_sales %> ชิ้น
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </ul>
+                            <i class="fa-solid fa-angle-right" id="right"></i>
+                        </div>
+                    </div>
+            </div>
+        </div>
+        </div>
+        <div class="row" id="dash_top">
+            <div class="col" id="trend">
+                <div class="container">
+                    <div class="row mt-4">
+                        <div class="col">
+                            <h1 id="list_product">LIST PRODUCT</h1>
+                        </div>
+                        <div class="col">
+                            <form class="main" action="/stock" method="get"> <!-- Change the action to point to your product search route -->
+                                <input type="search" placeholder="Search your products" id="productSearchInput" name="searchTerm">
+                                <button class="btn_main1" type="submit"><i class="fa-solid fa-magnifying-glass" id="icon_s"></i></button>
+                            </form>
+                        </div>
+                        
+                        
+                        <div class="col">
+                            <div class="row">
+                                <div class="col d-flex justify-content-end">
+                                    <a href="/Updatestock" class="btn" id="btn_update">เพิ่มสินค้า</a>
+                                    <a href="/import_Product" class="btn" id="btn_import">นำเข้าสินค้า</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <ul class="scrollbar_3_1">
+                        <div class="container">
+                            <div class="row" id="nav_p">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col d-flex align-items-center justify-content-center" id="name_T">ชื่อสินค้า</div>
+                                        <div class="col d-flex align-items-center justify-content-center" id="tel">ราคาสินค้า</div>
+                                        <div class="col d-flex align-items-center justify-content-center" id="tel">
+                                            <div class="row">
+                                                <div class="col"></div>
+                                                <div class="col d-flex align-items-center justify-content-center">จำนวน
+                                                    <div class="updow">
+                                                        <i class="fa-solid fa-caret-up" id="up"></i>
+                                                        <i class="fa-solid fa-sort-down" id="down"></i>
+                                                    </div>
+                                                    
+                                                </div>
+                                                <div class="col d-flex align-items-center justify-content-start">
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="col d-flex align-items-center justify-content-start" id="tel">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ul>
+
+                    <ul  class="scrollbar_3" id="scrollbar3">
+                        <div class="container">
+                            <% if (list_products && list_products.length > 0) { %>
+                                <!-- Loop to display products -->
+                                <% list_products.forEach(function(item) { %>
+                                    <div class="row" id="nav_p_item">
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col d-flex align-items-center justify-content-center" id="name_T"><%= item.NameProduct %></div>
+                                                <div class="col d-flex align-items-center justify-content-center" id="price"><%= item.PricePrduct %></div>
+                                                <div class="col d-flex align-items-center justify-content-center" id="remaining"><%= item.remaining %></div> <!-- Display remaining count here -->
+                                                <div class="col d-flex justify-content-end" id="actions">
+                                                    <a href="javascript:void(0);" onclick="togglePopup('<%= item._id %>')">
+                                                        <i class="bi bi-trash-fill" class="del-icon" id="del"></i>
+                                                    </a>                                               
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %> 
+                            <% } else { %>
+                                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                                    <div>
+                                      ไม่พบสินค้า!
+                                    </div>
+                                </div>
+                            <% } %>
+                                                        
+                        </div>
+                    </ul> 
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <div class="popup" id="popup-1">
+        <div class="overlay">
+            <div class="content">
+                <input type="hidden" id="productIdToDelete" value="">
+                <span class="alert_icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                <p>คุณต้องลบข้อมูลสินค้า ใช่หรือไม่?</p>
+                <div class="alert-buttons">
+                    <button id="cancel-btn" class="alert-btn cancel-btn" onclick="togglePopup()">ยกเลิก</button>
+                    <button id="confirm-btn" class="alert-btn confirm-btn" onclick="deleteProduct()">ตกลง</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript includes for jQuery, Popper.js, and Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Chart.js via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/stock.js"></script>
+    <script src="/js/realtime.js"></script>
+</body>
+</html>

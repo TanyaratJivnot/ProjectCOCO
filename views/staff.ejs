@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>👨🏻Staff</title>
+    <link rel="stylesheet" href="/css/staff.css">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+</head>
+<body>
+    <%- include('navbar', { notificate_items: notificate_items }) %>
+    <div class="dashbord">
+        <div class="row" id="dash_top">
+            <div class="col-12" id="trend">
+                <div class="container">
+                    <div class="row mt-4">
+                        <div class="col">
+                            <h1>STAFF</h1>
+                        </div>
+                        <div class="col">
+                            <form class="main" action="/staff" method="get">
+                                <input type="search" placeholder="Search your employee" id="employeeSearchInput" name="searchTerm">
+                                <button class="btn_main1" type="submit"><i class="fa-solid fa-magnifying-glass" id="icon_s"></i></button>
+                            </form>
+                            
+                        </div>
+                        
+                        <div class="col d-flex justify-content-end">
+                            <a class="btn" id="btn_p" href="/Updatestaff">เพิ่มพนักงาน</a>
+                        </div>
+
+                    </div>
+
+                    <ul class="scrollbar_2_1">
+                        <div class="container">
+                            <div class="row" id="nav_p">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col" id="name_T">ชื่อ-นามสกุล</div>
+                                        <div class="col" id="tel">เบอร์โทร</div>
+                                        <div class="col"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ul>
+                    
+                    <ul class="scrollbar_2" id="scrollbar2">
+                        <div class="container">
+                            <% if (employees_items_find && employees_items_find.length > 0) { %>
+                                <!-- Loop to display employees -->
+                                <% employees_items_find.forEach(function(item) { %>
+                                    <div class="row" id="nav_p_item">
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col" id="name_T"><%= item.Username %></div>
+                                                <div class="col" id="tel"><%= item.Tel_Staff %></div>
+                                                <div class="col d-flex justify-content-end" id="tel">
+                                                    <a href="javascript:void(0);" onclick="togglePopup('<%= item._id %>')">
+                                                        <i class="bi bi-trash-fill" id="del"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %> 
+                            <% } else { %>
+                                <div class="alert alert-danger d-flex align-items-center" role="alert">
+                                    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+                                    <div>
+                                      ไม่พบพนักงานนี้!
+                                    </div>
+                                  </div>
+                            <% } %>
+                            
+                        </div>
+                    </ul>
+                
+            </div>
+        </div>
+        </div>
+    </div>
+    <div class="popup" id="popup-1">
+        <div class="overlay">
+            <div class="content">
+                <input type="hidden" id="employeeIdToDelete" value="">
+                <span class="alert_icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+                <p>คุณต้องลบข้อมูลพนักงาน ใช่หรือไม่?</p>
+                <div class="alert-buttons">
+                    <button id="cancel-btn" class="alert-btn cancel-btn" onclick="togglePopup()">ยกเลิก</button>
+                    <button id="confirm-btn" class="alert-btn confirm-btn" onclick="deleteEmployee()">ตกลง</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- JavaScript includes for jQuery, Popper.js, and Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Chart.js via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/staff.js"></script>
+</body>
+</html>

@@ -1,0 +1,316 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@200;400&display=swap');
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.dashbord{
+    padding: 3rem 3.3rem;
+    background-color: #F5F7F8;
+}
+#trend{
+    border-radius: 3px;
+    background: #FFF;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    padding: 1rem;
+}
+#block_item1{
+    background: #F6F6F8;
+    box-shadow: 0px 1px 4px 0px rgba(0, 0, 0, 0.25);
+    border-radius: 3px;
+    padding: 1.55rem;
+}
+#block_item1:hover{
+    transform: scale(1.05);
+    cursor: pointer;
+    transition: .5s;
+}
+h1{
+    font-family: 'Noto Sans Thai', sans-serif;
+    color: #777;
+    font-weight: bolder;
+    font-size: 40px;
+}
+h3{
+    font-family: 'Noto Sans Thai', sans-serif;
+    color: #777;
+    font-weight: bolder;
+    font-size: 30px;
+}
+
+#icon_P1, #icon_P2, #icon_P3, #icon_P4{
+    font-size: 40px;
+}
+#icon_P1{
+    color: #1E9168;
+}
+#icon_P2{
+    color: #FFC04D;
+}
+#icon_P3{
+    color: #7D75E6;
+}
+#icon_P4{
+    color: #F58CB2;
+}
+#icon_add{
+    font-size: 30px;
+    color: #3677FE;
+}
+#icon_add:hover{
+    color: #777;
+    transition: .5s;
+    cursor: pointer;
+}
+#data_T{
+    font-family: 'Noto Sans Thai', sans-serif;
+}
+#chart-container{
+    background-color: rebeccapurple;
+}
+
+/* secrh */
+.main{
+    width: 450px;
+    border-radius: 100px;
+    background: #FFF;
+    box-shadow: 3px 1px 4px 1px rgba(0, 0, 0, 0.25) inset;
+    padding: 8px;
+    display: flex;
+    justify-content: center;
+}
+input{
+    background: transparent;
+    border: 0px;
+    outline: 0px;
+    width: 450px;
+}
+#icon_s{
+    font-size: 20px;
+    color: #12B495;
+    margin-right: 10px;
+
+}
+#icon_s:hover{
+    color: #777;
+    cursor: pointer;
+    transition: .5s;
+}
+#btn_p{
+    border-radius: 3px;
+    background: #12B495;
+    width: 140px;
+    height: 50px;
+    text-align: center;
+    color: #FFF;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Noto Sans Thai', sans-serif;
+    padding-top: 15px;
+}
+#btn_p:hover{
+    background: #7777;
+    transition: .5s;
+}
+#nav_p{
+    margin-top: 25px;
+    padding: 1rem;
+    border-radius: 3px;
+    background: #F6F6F8;
+    margin-bottom: 15px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+#nav_p_item{
+    margin-top: 25px;
+    padding: 1rem;
+    border-radius: 3px;
+    background: #FFFF;
+    margin-bottom: 15px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+#nav_p_item:hover{
+    transform: scale(1.0);
+    transition: .5s;
+}
+#name_T, #tel{
+    font-family: 'Noto Sans Thai', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1B2C35;
+}
+#del{
+    color: #F55B5B;
+    font-size: 20px;
+}
+#del:hover{
+    color: #7777;
+    transition: .5s;
+}
+
+/*       ScrollBar 2        */
+.scrollbar_2 {
+    width: 100%;
+    height: 378px;
+    overflow: auto;
+    padding: 0 5px;
+}
+.scrollbar_2_1 {
+    width: 100%;
+    padding: 0 5px;
+}
+
+
+#scrollbar2::-webkit-scrollbar {
+    width: 10px;
+}
+
+#scrollbar2::-webkit-scrollbar-track {
+    border-radius: 8px;
+    background-color: #F5F7F8;
+    border: 1px solid #e7e7e7;
+}
+
+#scrollbar2::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: #11B495;
+}
+.form-content{
+    position: absolute;
+    width: 350px;
+    border-radius: 5px;
+    background: #FFF;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    z-index: 1;
+    padding: 30px;
+    right: 250px;
+    top: 95px;
+}
+.input-box1 input{
+    border-radius: 3px;
+    border: 1px solid #EDECEC;
+    background: var(--web-tree-ffffff, #FFF);
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    margin-bottom: 10px;
+    width: 290px;
+    height: 30px;
+}
+.input-box1 p{
+    color: #1B2C35;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.input-box1{
+    position: relative;
+    overflow: hidden;
+}
+.input-box1 input[type="file"]{
+    cursor: pointer;
+    position: absolute;
+    width: 25%;
+    height: 50px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    opacity: 0;
+}
+.b8{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.button .btn{
+    margin-left:5px;
+    margin-right:5px;
+    margin-top: 30px;
+}
+.btn_close{
+    width: 100px;
+    color: #1B2C35;
+    border-radius: 2px;
+    border: 1px solid #F6F6F8;
+    background-color: #F6F6F8 !important;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+.btn_ok{
+    width: 110px;
+    color: #F6F6F8 !important;
+    border-radius: 2px;
+    border: 1px solid #12B495;
+    background-color: #12B495 !important;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+/* alert */
+.alert_icon {
+    font-size: 50px; 
+    color: red;
+}
+.alert-btn {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .cancel-btn {
+    background-color: #5cb85c;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .cancel-btn:hover {
+    background-color: #777;
+    transition: 0.5s;
+  }
+  
+  .confirm-btn {
+    background-color: #d9534f;
+    color: white;
+    cursor: pointer;
+  }
+  .confirm-btn:hover {
+    background-color: #777;
+    transition: 0.5s;
+  }
+
+.popup .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1;
+    display: none;
+}
+.popup .content{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: #e7e7e7;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 3px;
+    width: 350px;
+    height: 250px;
+    z-index: 2;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
+
+}
+.popup.active .overlay {
+    display: block;
+}
+.popup.active .content {
+    transition: all 300ms ease-in-out;
+    transform: translate(-50%, -50%) scale(1);
+}
+.btn_main1 {
+    background: none; /* ลบพื้นหลัง */
+    border: none; /* ลบเส้นกรอบ */
+    outline: none !important; /* ลบเส้นกรอบที่ปรากฏเมื่อคลิก */
+}
