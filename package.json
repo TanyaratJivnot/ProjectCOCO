@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js"
+    "start": "node app.js",
+    "dev": "nodemon app.js"
   },
   "author": "",
   "license": "ISC",
@@ -33,5 +34,8 @@
     "node-schedule": "^2.1.1",
     "validator": "^13.11.0",
     "ws": "^8.17.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }
