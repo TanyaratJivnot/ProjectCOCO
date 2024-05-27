@@ -95,8 +95,9 @@ const categoryMappings = {
 
 
 router.get('/home', async (req, res) => {
+    const startTime = Date.now();
     try {
-        await createNotifications(req); 
+        await createNotifications(req);
         const weather = await getWeatherData();
         res.render('home.ejs', {
             employees_items,
@@ -105,13 +106,16 @@ router.get('/home', async (req, res) => {
             formattedDate: null,
             selectedDate: req.query.date,
             temperature: weather.temperature,
-            weatherIcon: weather.icon  
+            weatherIcon: weather.icon
         });
     } catch (error) {
         console.error('Error when rendering home:', error);
         res.status(500).send('Error loading the page');
+    } finally {
+        console.log(`Request for /home completed in ${Date.now() - startTime}ms`);
     }
 });
+
 
 router.get('/totalSale', async(req, res) => {
     try {
