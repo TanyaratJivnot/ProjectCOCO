@@ -34,5 +34,8 @@
     "node-schedule": "^2.1.1",
     "validator": "^13.11.0",
     "ws": "^8.17.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
   }
 }
