@@ -305,7 +305,7 @@ function fetchDataAndPlotGraph (selectedDate, todayDate) {
   console.log("Fetching data and plotting graph for:", selectedDate);
   const dateToFetch = selectedDate || todayDate; // Use selected date if available, otherwise use today's date
   const salesDataUrl = `${window.location.port == "" ?`https://${window.location.hostname}` :`http://${window.location.hostname}:${window.location.port}` }/sales-data?date=${dateToFetch}`;
-  const homeDataUrl = `https://project-coco.vercel.app/totalSale?date=${dateToFetch}`;
+  const homeDataUrl = `${window.location.port == "" ?`https://${window.location.hostname}` :`http://${window.location.hostname}:${window.location.port}` }/totalSale?date=${dateToFetch}`;
   console.log("Sales data URL:", salesDataUrl);
   console.log("Home data URL:", homeDataUrl);
 
@@ -340,7 +340,7 @@ function fetchDataAndPlotGraph (selectedDate, todayDate) {
 
 function fetchData(todayDate) {
   console.log("Fetching data and plotting graph for:", todayDate);
-  const todayDateUrl = `https://project-coco.vercel.app/sales-today?date=${todayDate}`;
+  const todayDateUrl = `${window.location.port == "" ?`https://${window.location.hostname}` :`http://${window.location.hostname}:${window.location.port}` }/sales-today?date=${todayDate}`;
   fetch(todayDateUrl)
   .then(response => response.json())
   .then(data => {
@@ -359,7 +359,7 @@ function fetchData(todayDate) {
 
 function ProductPopularToday(todayDate) {
   console.log("Fetching data and plotting graph for:", todayDate);
-  const ProductPopularUrl = `https://project-coco.vercel.app/productPopular?date=${todayDate}`;  // ตรวจสอบให้แน่ใจว่า URL ถูกต้อง
+  const ProductPopularUrl = `${window.location.port == "" ?`https://${window.location.hostname}` :`http://${window.location.hostname}:${window.location.port}` }/productPopular?date=${todayDate}`;  // ตรวจสอบให้แน่ใจว่า URL ถูกต้อง
 
   fetch(ProductPopularUrl)
   .then(response => response.json())
@@ -380,7 +380,7 @@ function ProductPopularToday(todayDate) {
 function fetchDataRankSalesEmployee(selectedDate,todayDate) {
   const dateToFetch = selectedDate || todayDate;
   console.log("Fetching data and Rank for:", dateToFetch);
-  const RankSalesEmployeeUrl = `https://project-coco.vercel.app/employeeSales?date=${dateToFetch}`;
+  const RankSalesEmployeeUrl = `${window.location.port == "" ?`https://${window.location.hostname}` :`http://${window.location.hostname}:${window.location.port}` }/employeeSales?date=${dateToFetch}`;
   console.log("RankSalesEmployeeUrl:", RankSalesEmployeeUrl);
 
   fetch(RankSalesEmployeeUrl)
@@ -396,7 +396,7 @@ function fetchDataRankSalesEmployee(selectedDate,todayDate) {
 }
 function fetchDataremainingProduct(todayDate) {
   console.log("Fetching data remaining Bar graph for:", todayDate);
-  const remainingforDay = `https://project-coco.vercel.app/remainingforDay?date=${todayDate}`;
+  const remainingforDay = `${window.location.port == "" ?`https://${window.location.hostname}` :`http://${window.location.hostname}:${window.location.port}` }/remainingforDay?date=${todayDate}`;
   console.log("remaining for Day Url :", remainingforDay);
 
   fetch(remainingforDay)
@@ -412,7 +412,7 @@ function fetchDataremainingProduct(todayDate) {
 function fetchDatapopularProduct(selectedDate,todayDate) {
   const dateToFetch = selectedDate || todayDate;
   console.log("Fetching data and popularProduct graph for:", dateToFetch);
-  const productPopularforDay = `https://project-coco.vercel.app/productPopular5?date=${dateToFetch}`;
+  const productPopularforDay = `${window.location.port == "" ?`https://${window.location.hostname}` :`http://${window.location.hostname}:${window.location.port}` }/productPopular5?date=${dateToFetch}`;
   console.log("productPopularUrl:", productPopularforDay);
 
   fetch(productPopularforDay)
