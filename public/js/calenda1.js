@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function() {
   // Setup for first button and calendar
   var calendarButton1 = document.getElementById('calenda');
@@ -305,7 +306,8 @@ function fetchDataAndPlotGraph (selectedDate, todayDate) {
   const dateToFetch = selectedDate || todayDate; // Use selected date if available, otherwise use today's date
   const salesDataUrl = `https://project-coco.vercel.app/sales-data?date=${dateToFetch}`;
   const homeDataUrl = `https://project-coco.vercel.app/totalSale?date=${dateToFetch}`;
-
+  console.log(window.location.hostname)
+  console.log(window.location.port)
   console.log("Sales data URL:", salesDataUrl);
   console.log("Home data URL:", homeDataUrl);
 
