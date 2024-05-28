@@ -13,6 +13,7 @@ const ActivityLog = require('../models/ActivityLog');
 const SalesOrder = require('../models/Sales_Order');
 const getWeatherData = require('../models/weater');
 const fs = require('fs');
+const multer = require('multer');
 const { body, validationResult } = require('express-validator');
 
 const id_product = {
@@ -520,9 +521,12 @@ router.get('/Updatestock', (req, res) => {
 router.post('/addProduct', upload.single('productImage'), async (req, res) => {
     const file = req.file;
     if (!file) {
+        console.error('No file uploaded');
         return res.status(400).send('Please upload a file.');
     }
     try {
+        console.log('File uploaded:', file);
+
         // Log incoming form data for debugging
         console.log('Form Data:', req.body);
 
