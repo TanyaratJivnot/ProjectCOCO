@@ -162,3 +162,91 @@ img{
     border-radius: 8px;
     background-color: #B1B1B1;
 }
+
+/* nav.css */
+
+/* Styles for iPad */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .navbar {
+        height: 70px;
+        padding: 0 20px;
+    }
+
+    .navbar_left {
+        width: 60%;
+    }
+
+    .menu a {
+        margin: 0 20px;
+        font-size: 15px;
+    }
+
+    .navbar_right {
+        width: 20%;
+    }
+
+    .notifications_dd {
+        width: 300px;
+        height: auto;
+    }
+
+    .notifications_dd li {
+        padding: 8px 5px;
+    }
+
+    .notify_data .title {
+        font-size: 14px;
+    }
+
+    .notify_data .sub_title {
+        font-size: 13px;
+    }
+
+    .notify_status {
+        font-size: 13px;
+    }
+}
+
+/* Styles for smaller devices */
+@media (max-width: 767px) {
+    .navbar {
+        height: 60px;
+        padding: 0 10px;
+    }
+
+    .navbar_left {
+        width: 70%;
+    }
+
+    .menu a {
+        margin: 0 10px;
+        font-size: 14px;
+    }
+
+    .navbar_right {
+        width: 30%;
+    }
+
+    .notifications_dd {
+        width: 250px;
+        height: auto;
+    }
+
+    .notifications_dd li {
+        padding: 6px 5px;
+    }
+
+    .notify_data .title {
+        font-size: 12px;
+    }
+
+    .notify_data .sub_title {
+        font-size: 11px;
+    }
+
+    .notify_status {
+        font-size: 11px;
+    }
+}
+
+/* Add other styles for larger screens if needed */
