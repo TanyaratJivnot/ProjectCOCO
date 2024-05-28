@@ -12,17 +12,18 @@ const Count_product = require('../models/Counts_Product');
 const ActivityLog = require('../models/ActivityLog');
 const SalesOrder = require('../models/Sales_Order');
 const getWeatherData = require('../models/weater');
+const fs = require('fs');
 const { body, validationResult } = require('express-validator');
 
 const id_product = {
-    'น้ำมะพร้าวแก้ว': { Product_ID: 1 }, 
-    'มะพร้าวลูก': { Product_ID: 2 }, 
-    'มะพร้าวขวด': { Product_ID: 3 }, 
-    'พุดดิ้งมะพร้าว': { Product_ID: 4 }, 
-    'เนื้อมะพร้าวครึ่งโล': { Product_ID: 6 }, 
-    'น้ำนมข้าวโพด': { Product_ID: 10 }, 
-    'ป๊อปคอร์นขนาดใหญ่': { Product_ID: 14 }, 
-    'ป๊อปคอร์นขนาดกลาง': { Product_ID: 15 }, 
+    'น้ำมะพร้าวแก้ว': { Product_ID: 1 },
+    'มะพร้าวลูก': { Product_ID: 2 },
+    'มะพร้าวขวด': { Product_ID: 3 },
+    'พุดดิ้งมะพร้าว': { Product_ID: 4 },
+    'เนื้อมะพร้าวครึ่งโล': { Product_ID: 6 },
+    'น้ำนมข้าวโพด': { Product_ID: 10 },
+    'ป๊อปคอร์นขนาดใหญ่': { Product_ID: 14 },
+    'ป๊อปคอร์นขนาดกลาง': { Product_ID: 15 },
     'ป๊อปคอร์นขนาดเล็ก': { Product_ID: 16 }
 };
 const storage = multer.diskStorage({
@@ -117,7 +118,7 @@ router.get('/home', async (req, res) => {
 });
 
 
-router.get('/totalSale', async(req, res) => {
+router.get('/totalSale', async (req, res) => {
     try {
         let selectedDate = req.query.date;
         console.log("Selected home date:", selectedDate);
@@ -125,20 +126,26 @@ router.get('/totalSale', async(req, res) => {
         // Aggregate sales data for the selected date
         const salesData = await SalesOrder.aggregate([
             { $match: { Order_Date: selectedDate } },
-            { $lookup: {
-                from: "products",
-                localField: "Product_ID",
-                foreignField: "Product_ID",
-                as: "productDetails"
-            }},
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "Product_ID",
+                    foreignField: "Product_ID",
+                    as: "productDetails"
+                }
+            },
             { $unwind: "$productDetails" },
-            { $project: {
-                totalPerProduct: { $multiply: ["$Total_Amount", "$productDetails.PricePrduct"] }
-            }},
-            { $group: {
-                _id: null,
-                salesTotalAmount: { $sum: "$totalPerProduct" }
-            }}
+            {
+                $project: {
+                    totalPerProduct: { $multiply: ["$Total_Amount", "$productDetails.PricePrduct"] }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    salesTotalAmount: { $sum: "$totalPerProduct" }
+                }
+            }
         ]).exec();
 
         const totalSales = salesData.length > 0 ? salesData[0].salesTotalAmount : 0;
@@ -151,7 +158,7 @@ router.get('/totalSale', async(req, res) => {
         res.status(500).send('Error loading the page');
     }
 });
-  
+
 router.get('/sales-data', async (req, res) => {
     try {
         let selectedDate = req.query.date;
@@ -195,20 +202,26 @@ router.get('/sales-today', async (req, res) => {
     try {
         const salesData = await SalesOrder.aggregate([
             { $match: { Order_Date: formattedDate } },
-            { $lookup: {
-                from: "products",
-                localField: "Product_ID",
-                foreignField: "Product_ID",
-                as: "productDetails"
-            }},
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "Product_ID",
+                    foreignField: "Product_ID",
+                    as: "productDetails"
+                }
+            },
             { $unwind: "$productDetails" },
-            { $project: {
-                totalPerProduct: { $multiply: ["$Total_Amount", "$productDetails.PricePrduct"] }
-            }},
-            { $group: {
-                _id: null,
-                salesTotalAmount: { $sum: "$totalPerProduct" }
-            }}
+            {
+                $project: {
+                    totalPerProduct: { $multiply: ["$Total_Amount", "$productDetails.PricePrduct"] }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    salesTotalAmount: { $sum: "$totalPerProduct" }
+                }
+            }
         ]).exec();
         const totalSales = salesData.length > 0 ? salesData[0].salesTotalAmount : 0;
         console.log("Sales to day Amount:", totalSales);
@@ -267,7 +280,7 @@ router.get('/productPopular', async (req, res) => {
 
         // Check if data is empty or null, and handle accordingly
         if (!productPopularData.length || !productPopularData[0].NameProduct) {
-            res.send([{NameProduct: '--', totalSold: '--'}]);
+            res.send([{ NameProduct: '--', totalSold: '--' }]);
         } else {
             res.send(productPopularData);
         }
@@ -277,38 +290,44 @@ router.get('/productPopular', async (req, res) => {
     }
 });
 router.get('/employeeSales', async (req, res) => {
-   /*  const now = new Date();
-    const selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-    //const formattedDate = selectedDate.toISOString().split('T')[0];
-    const formattedDate = "2023-02-08"; //test
-    console.log("employeeSales selectedDate :", formattedDate); */
+    /*  const now = new Date();
+     const selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+     //const formattedDate = selectedDate.toISOString().split('T')[0];
+     const formattedDate = "2023-02-08"; //test
+     console.log("employeeSales selectedDate :", formattedDate); */
     try {
         let formattedDate = req.query.date;
         console.log("employeeSales selectedDate :", formattedDate);
         const salesData = await SalesOrder.aggregate([
             { $match: { Order_Date: formattedDate } },
-            { $lookup: {
-                from: 'products',
-                localField: 'Product_ID',
-                foreignField: 'Product_ID',
-                as: 'productDetails'
-            }},
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'Product_ID',
+                    foreignField: 'Product_ID',
+                    as: 'productDetails'
+                }
+            },
             { $unwind: '$productDetails' },
-            { $lookup: {
-                from: 'employees',
-                localField: 'Employee_ID',
-                foreignField: 'Employee_ID',
-                as: 'employeeDetails'
-            }},
+            {
+                $lookup: {
+                    from: 'employees',
+                    localField: 'Employee_ID',
+                    foreignField: 'Employee_ID',
+                    as: 'employeeDetails'
+                }
+            },
             { $unwind: '$employeeDetails' },
-            { $group: {
-                _id: '$Employee_ID',
-                name: { $first: '$employeeDetails.Username' },
-                quantity: { $sum: '$Total_Amount' },
-                totalSales: { $sum: { $multiply: ['$Total_Amount', '$productDetails.PricePrduct'] } }
-            }}
+            {
+                $group: {
+                    _id: '$Employee_ID',
+                    name: { $first: '$employeeDetails.Username' },
+                    quantity: { $sum: '$Total_Amount' },
+                    totalSales: { $sum: { $multiply: ['$Total_Amount', '$productDetails.PricePrduct'] } }
+                }
+            }
         ]);
-        console.log("employeeSalesData:",salesData);
+        console.log("employeeSalesData:", salesData);
         res.send(salesData);
     } catch (error) {
         console.error('Error fetching employeeSales data:', error);
@@ -340,8 +359,8 @@ router.get('/remainingforDay', async (req, res) => {
                 $project: {
                     _id: 0,
                     productName: '$productDetails.NameProduct',
-                    remainingQuantity: '$remaining', 
-                    countSell: '$Count_sell', 
+                    remainingQuantity: '$remaining',
+                    countSell: '$Count_sell',
                     expireDate: '$expire'
                 }
             }
@@ -418,7 +437,7 @@ router.get('/stock', async (req, res) => {
     const searchTerm = req.query.searchTerm;
     const sortQuery = req.query.sort; // 'asc' or 'desc'
     const sortOrder = sortQuery === 'asc' ? -1 : 1; // 1 for ascending, -1 for descending
-    
+
     console.log(`Search Term: ${searchTerm}`); // Debug: Log the search term
 
     try {
@@ -461,12 +480,13 @@ router.get('/stock', async (req, res) => {
         // Log the count of products being sent to the template
         console.log(`Products Count Being Rendered: ${mergedList.length}`);
 
+
         // Render the page with the merged list
         res.render('stockPage.ejs', {
             list_products: mergedList,
             list_predict_products: global.list_predict_products.length > 0 ? global.list_predict_products : global.list_predict_undata,
-            formattedDate: null, 
-            notificate_items, 
+            formattedDate: null,
+            notificate_items,
             notificate_count: notificate_items.length
         });
     } catch (err) {
@@ -480,31 +500,39 @@ router.get('/stock', async (req, res) => {
 router.delete('/product/delete/:id', (req, res) => {
     const productId = req.params.id;
     console.log("Product deletion route hit with ID:", productId);
-    
+
     Product.findByIdAndDelete(productId)
-    .then(() => {
-        // If related counts are successfully deleted, send success response
-        res.json({success: true});
-    })
-    .catch(err => {
-        console.error(err);
-        res.status(500).json({success: false, message: 'Error deleting product and related counts'});
-    });
+        .then(() => {
+            // If related counts are successfully deleted, send success response
+            res.json({ success: true });
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({ success: false, message: 'Error deleting product and related counts' });
+        });
 });
 
 
 
-router.get('/Updatestock', (req, res)=>{
-    res.render('insert_product.ejs', {employees_items, notificate_items, notificate_count, formattedDate: null});
+router.get('/Updatestock', (req, res) => {
+    res.render('insert_product.ejs', { employees_items, notificate_items, notificate_count, formattedDate: null });
 })
-router.post('/addProduct', upload.single('productImage'),async (req, res) => {
+router.post('/addProduct', upload.single('productImage'), async (req, res) => {
     const file = req.file;
     if (!file) {
         return res.status(400).send('Please upload a file.');
     }
     try {
-         // เก็บ path ของไฟล์เพื่อใช้ใน database
-         const imagePath = '/img/' + file.filename;  // เปลี่ยน path เพื่อสะท้อนถึงการเปลี่ยนแปลงใหม่
+        let base64String = '';  // สร้าง path สำหรับเก็บใน database
+        fs.readFile(file.path, (err, data) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Error processing request');
+            }
+            base64String = data.toString('base64');
+        });
+        // เก็บ path ของไฟล์เพื่อใช้ใน database
+        // const imagePath = '/img/' + file.filename;  // เปลี่ยน path เพื่อสะท้อนถึงการเปลี่ยนแปลงใหม่
         // Determine Category_ID and Type_ID based on selected category
         const categoryName = req.body.categoryName; // Ensure this matches the name attribute in your form
         const { Category_ID, Type_ID } = categoryMappings[categoryName] || { Category_ID: 1, Type_ID: 1 }; // Default to some category if not found
@@ -522,7 +550,8 @@ router.post('/addProduct', upload.single('productImage'),async (req, res) => {
             Barcode: req.body.Barcode,
             NameProduct: req.body.NameProduct,
             PricePrduct: req.body.PricePrduct,
-            ImageProduct: imagePath,
+            ImageProduct: base64String,
+            ImageTypeProduct: file.mimetype,
             DetailProduct: ""
         });
         await newProduct.save();
@@ -548,8 +577,8 @@ router.post('/addProduct', upload.single('productImage'),async (req, res) => {
     }
 });
 
-router.get('/Import_Product', (req,res)=> {
-    res.render('import_product.ejs', {employees_items, notificate_items, notificate_count, formattedDate: null});
+router.get('/Import_Product', (req, res) => {
+    res.render('import_product.ejs', { employees_items, notificate_items, notificate_count, formattedDate: null });
 })
 
 router.post('/import_product', async (req, res) => {
@@ -557,7 +586,7 @@ router.post('/import_product', async (req, res) => {
         // รวบรวมค่าจากฟอร์ม
         const productNames = [];
         const countSells = [];
-        
+
         for (let i = 1; i <= 9; i++) {
             if (req.body[`productName${i}`] && req.body[`Count_sell${i}`]) {
                 productNames.push(req.body[`productName${i}`]);
@@ -642,8 +671,8 @@ router.get('/staff', async (req, res) => {
 
         res.render('staff.ejs', {
             employees_items_find: employees_items_find,
-            notificate_items, 
-            notificate_count, 
+            notificate_items,
+            notificate_count,
             formattedDate: null
         });
     } catch (err) {
@@ -656,28 +685,29 @@ router.get('/staff', async (req, res) => {
 router.delete('/staff/delete/:id', (req, res) => {
     console.log("Search route hit with term:", req.query.term);
     Employee.findByIdAndDelete(req.params.id)
-    .then(() => {
-        res.json({success: true});
-    })
-    .catch(err => {
-        console.error(err);
-        res.status(500).json({success: false, message: 'Error deleting employee'});
-    });
+        .then(() => {
+            res.json({ success: true });
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({ success: false, message: 'Error deleting employee' });
+        });
 });
 
 /* insert_staff */
-router.get('/Updatestaff', (req, res)=>{
-    res.render('insert_employee.ejs', {employees_items, notificate_items, notificate_count, formattedDate: null});
+router.get('/Updatestaff', (req, res) => {
+    res.render('insert_employee.ejs', { employees_items, notificate_items, notificate_count, formattedDate: null });
 })
-router.post('/addEmployee',upload.single('IMG'), async(req, res)=>{
+router.post('/addEmployee', upload.single('IMG'), async (req, res) => {
     const file = req.file;
     if (!file) {
         return res.status(400).send('Please upload a file.');
     }
     try {
+        console.log('File uploaded:', file);
         const imagePath = '/img/' + file.filename;  // สร้าง path สำหรับเก็บใน database
         const lastEmployee = await Employee.findOne().sort('-Employee_ID').exec();
-        
+
         const newEmployeeId = lastEmployee && lastEmployee.Employee_ID ? parseInt(lastEmployee.Employee_ID) + 1 : 1;
         console.log(`New Employee_ID: ${newEmployeeId}`);
 
@@ -710,13 +740,13 @@ router.get('/nav', (req, res) => {
 });
 
 /* login */
-router.get('/', (req, res)=>{
+router.get('/', (req, res) => {
     res.render('login.ejs', { error: {} });
 })
 router.post('/', async (req, res, next) => {
     const startTime = Date.now();
     const username = req.body.username;
-    const password  = req.body.password;
+    const password = req.body.password;
 
     if (!username || !password) {
         return res.render('login.ejs', { error: { msg: 'Please enter both username and password' } });

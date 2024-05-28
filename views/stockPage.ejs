@@ -104,6 +104,7 @@
                             <div class="row" id="nav_p">
                                 <div class="col">
                                     <div class="row">
+                                        <div class="col d-flex align-items-center justify-content-center" id="image_prod"></div>
                                         <div class="col d-flex align-items-center justify-content-center" id="name_T">ชื่อสินค้า</div>
                                         <div class="col d-flex align-items-center justify-content-center" id="tel">ราคาสินค้า</div>
                                         <div class="col d-flex align-items-center justify-content-center" id="tel">
@@ -138,6 +139,10 @@
                                     <div class="row" id="nav_p_item">
                                         <div class="col">
                                             <div class="row">
+                                                <div class="col d-flex align-items-center justify-content-center" id="name_T">
+                                                    <!-- <%= item.NameProduct %> -->
+                                                <img src="data:<%= item.ImageTypeProduct %>;base64,<%= item.ImageProduct %>" alt="product image" class="product-image"> <!-- Display product image here -->
+                                                </div>
                                                 <div class="col d-flex align-items-center justify-content-center" id="name_T"><%= item.NameProduct %></div>
                                                 <div class="col d-flex align-items-center justify-content-center" id="price"><%= item.PricePrduct %></div>
                                                 <div class="col d-flex align-items-center justify-content-center" id="remaining"><%= item.remaining %></div> <!-- Display remaining count here -->
