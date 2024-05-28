@@ -44,7 +44,7 @@
                                             <% if (item.img.startsWith('data:') || item.imgType === 'base64') { %>
                                                 <!-- แสดงรูปภาพจาก Base64 string -->
                                                 <img src="data:<%= item.imgType %>;base64,<%= item.img %>" alt="image" class="product-image">
-                                            <% } else { %>
+                                            <% } else if (item.img.startsWith('/')) { %>
                                                 <!-- แสดงรูปภาพจาก URL -->
                                                 <img src="<%= item.img %>" alt="image" class="product-image">
                                             <% } %>
