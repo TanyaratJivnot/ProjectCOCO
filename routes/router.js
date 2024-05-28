@@ -333,7 +333,7 @@ router.get('/employeeSales', async (req, res) => {
         console.error('Error fetching employeeSales data:', error);
         res.status(500).send('Failed to fetch data');
     }
-});
+}); 
 router.get('/remainingforDay', async (req, res) => {
     const now = new Date();
     const selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
