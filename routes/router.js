@@ -523,26 +523,16 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
         return res.status(400).send('Please upload a file.');
     }
     try {
-        let base64String = '';  // สร้าง path สำหรับเก็บใน database
-        fs.readFile(file.path, (err, data) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).send('Error processing request');
-            }
-            base64String = data.toString('base64');
-        });
-        // เก็บ path ของไฟล์เพื่อใช้ใน database
-        // const imagePath = '/img/' + file.filename;  // เปลี่ยน path เพื่อสะท้อนถึงการเปลี่ยนแปลงใหม่
-        // Determine Category_ID and Type_ID based on selected category
-        const categoryName = req.body.categoryName; // Ensure this matches the name attribute in your form
-        const { Category_ID, Type_ID } = categoryMappings[categoryName] || { Category_ID: 1, Type_ID: 1 }; // Default to some category if not found
+        const data = await fs.readFile(file.path);
+        const base64String = data.toString('base64');
 
-        // Generating a New Product_ID
+        const categoryName = req.body.categoryName;
+        const { Category_ID, Type_ID } = categoryMappings[categoryName] || { Category_ID: 1, Type_ID: 1 };
+
         const lastProduct = await Product.findOne().sort('-Product_ID').exec();
         const newProductId = lastProduct && lastProduct.Product_ID ? parseInt(lastProduct.Product_ID) + 1 : 1;
         console.log(`New Product_ID: ${newProductId}`);
 
-        // Saving Product Information
         const newProduct = new Product({
             Product_ID: newProductId,
             Category_ID: Category_ID,
@@ -556,27 +546,21 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
         });
         await newProduct.save();
 
-        // Saving Initial Count Information
         const newCountProduct = new Count_product({
-            CountsProduct_ID: newProductId, // Set to 'owner' as per your requirement
+            CountsProduct_ID: newProductId,
             Employee_ID: null,
             Product_ID: newProduct.Product_ID,
-            CountDate: new Date(), // Set to current date or another appropriate value
+            CountDate: new Date(),
             To_sell: 0,
             Count_sell: 0,
-            expire: '0', // Assuming this is a string as per your schema
-            remaining: req.body.remaining // Get this from the form submission
+            expire: '0',
+            remaining: req.body.remaining
         });
         await newCountProduct.save();
 
-        fs.unlink(file.path, (err) => {
-            if (err) {
-                console.error(err);
-            }
-        });
+        await fs.unlink(file.path);
 
-        // Redirect or send a response
-        res.redirect('/stock'); // Redirect to a success page or another appropriate route
+        res.redirect('/stock');
     } catch (err) {
         console.error(err);
         res.status(500).send('Error processing request');
