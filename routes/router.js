@@ -523,6 +523,9 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
         return res.status(400).send('Please upload a file.');
     }
     try {
+        // Log incoming form data for debugging
+        console.log('Form Data:', req.body);
+
         // Read file data and convert to base64
         const data = await fs.readFile(file.path);
         const base64String = data.toString('base64');
@@ -548,6 +551,10 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
             ImageTypeProduct: file.mimetype,
             DetailProduct: ""
         });
+
+        // Log product data before saving
+        console.log('Product Data:', newProduct);
+
         await newProduct.save();
 
         // Create initial count product
@@ -561,6 +568,10 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
             expire: '0',
             remaining: req.body.remaining
         });
+
+        // Log count product data before saving
+        console.log('Count Product Data:', newCountProduct);
+
         await newCountProduct.save();
 
         // Delete uploaded file
