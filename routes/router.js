@@ -523,16 +523,20 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
         return res.status(400).send('Please upload a file.');
     }
     try {
+        // Read file data and convert to base64
         const data = await fs.readFile(file.path);
         const base64String = data.toString('base64');
 
+        // Retrieve category details
         const categoryName = req.body.categoryName;
         const { Category_ID, Type_ID } = categoryMappings[categoryName] || { Category_ID: 1, Type_ID: 1 };
 
+        // Generate new Product_ID
         const lastProduct = await Product.findOne().sort('-Product_ID').exec();
         const newProductId = lastProduct && lastProduct.Product_ID ? parseInt(lastProduct.Product_ID) + 1 : 1;
         console.log(`New Product_ID: ${newProductId}`);
 
+        // Create new product
         const newProduct = new Product({
             Product_ID: newProductId,
             Category_ID: Category_ID,
@@ -546,6 +550,7 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
         });
         await newProduct.save();
 
+        // Create initial count product
         const newCountProduct = new Count_product({
             CountsProduct_ID: newProductId,
             Employee_ID: null,
@@ -558,11 +563,12 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
         });
         await newCountProduct.save();
 
+        // Delete uploaded file
         await fs.unlink(file.path);
 
         res.redirect('/stock');
     } catch (err) {
-        console.error(err);
+        console.error('Error processing request:', err);
         res.status(500).send('Error processing request');
     }
 });
