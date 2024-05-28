@@ -153,3 +153,37 @@
     z-index: 1;
     transition: all 0.3s ease;
 }
+
+
+/* calenda1.css */
+
+/* Media Queries for iPad */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .calendar {
+        max-width: 300px;
+        min-width: 250px;
+    }
+
+    .calendar .calendar-inner .calendar-controls .calendar-year-month .calendar-year-label,
+    .calendar .calendar-inner .calendar-controls .calendar-year-month .calendar-month-label {
+        font-size: 18px;
+    }
+
+    .calendar .calendar-inner .calendar-body div {
+        padding: 3px;
+        min-height: 25px;
+        line-height: 25px;
+    }
+
+    .calendar .calendar-inner .calendar-controls .calendar-next a,
+    .calendar .calendar-inner .calendar-controls .calendar-prev a {
+        font-size: 22px;
+        padding: 3px 10px;
+    }
+
+    .calendar .calendar-inner .calendar-controls .calendar-next a svg,
+    .calendar .calendar-inner .calendar-controls .calendar-prev a svg {
+        height: 18px;
+        width: 18px;
+    }
+}

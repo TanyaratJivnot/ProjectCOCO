@@ -432,3 +432,63 @@ input{
     border: none; /* ลบเส้นกรอบ */
     outline: none !important; /* ลบเส้นกรอบที่ปรากฏเมื่อคลิก */
 }
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .dashbord {
+        padding: 2rem 2rem;
+    }
+
+    #trend {
+        padding: 1rem;
+    }
+
+    h1 {
+        font-size: 30px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    .card {
+        width: 200px;
+        height: 180px;
+    }
+
+    #left, #right {
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 18px;
+    }
+
+    #btn_import, #btn_update {
+        width: 100px;
+        height: 40px;
+        font-size: 14px;
+    }
+
+    .form-content {
+        width: 300px;
+    }
+
+    .input-box1 input {
+        width: 250px;
+    }
+
+    .btn_close, .btn_ok {
+        width: 90px;
+    }
+
+    .scrollbar_3, .scrollbar_4 {
+        height: 300px;
+    }
+
+    .alert_icon {
+        font-size: 40px;
+    }
+
+    .alert-btn {
+        font-size: 14px;
+    }
+}
