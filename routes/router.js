@@ -577,7 +577,6 @@ router.get('/Import_Product', (req, res) => {
 
 router.post('/import_product', async (req, res) => {
     try {
-        // รวบรวมค่าจากฟอร์ม
         const productNames = [];
         const countSells = [];
 
@@ -588,15 +587,9 @@ router.post('/import_product', async (req, res) => {
             }
         }
 
-        // ฟังก์ชันสำหรับการสร้างรูปแบบวันที่
-        const getFormattedDate = (date) => {
-            let year = date.getFullYear();
-            let month = (date.getMonth() + 1).toString().padStart(2, '0');
-            let day = date.getDate().toString().padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        };
+        // ใช้ moment-timezone เพื่อกำหนดวันที่ในรูปแบบ 'YYYY-MM-DD'
+        const importDate = moment().tz('Asia/Bangkok').format('YYYY-MM-DD');
 
-        const importDate = getFormattedDate(new Date());
         const newImportProducts = [];
 
         for (let i = 0; i < productNames.length; i++) {
