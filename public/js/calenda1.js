@@ -304,10 +304,8 @@ function CalendarControl() {
 function fetchDataAndPlotGraph (selectedDate, todayDate) {
   console.log("Fetching data and plotting graph for:", selectedDate);
   const dateToFetch = selectedDate || todayDate; // Use selected date if available, otherwise use today's date
-  const salesDataUrl = `https://project-coco.vercel.app/sales-data?date=${dateToFetch}`;
+  const salesDataUrl = `${window.location.port == "" ?window.location.hostname :`${window.location.hostname}:${window.location.port}` }/sales-data?date=${dateToFetch}`;
   const homeDataUrl = `https://project-coco.vercel.app/totalSale?date=${dateToFetch}`;
-  console.log(window.location.hostname)
-  console.log(window.location.port)
   console.log("Sales data URL:", salesDataUrl);
   console.log("Home data URL:", homeDataUrl);
 
