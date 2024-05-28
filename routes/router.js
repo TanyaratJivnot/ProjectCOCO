@@ -13,7 +13,6 @@ const ActivityLog = require('../models/ActivityLog');
 const SalesOrder = require('../models/Sales_Order');
 const getWeatherData = require('../models/weater');
 const fs = require('fs');
-const multer = require('multer');
 const { body, validationResult } = require('express-validator');
 
 const id_product = {
