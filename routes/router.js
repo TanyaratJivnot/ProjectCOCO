@@ -691,10 +691,10 @@ router.post('/addEmployee', upload.single('IMG'), async (req, res) => {
         return res.status(400).send('Please upload a file.');
     }
     try {
-        console.log('File uploaded:', file);
-        const imagePath = '/img/' + file.filename;  // สร้าง path สำหรับเก็บใน database
-        const lastEmployee = await Employee.findOne().sort('-Employee_ID').exec();
+        // แปลงไฟล์เป็น Base64
+        const base64String = file.buffer.toString('base64');
 
+        const lastEmployee = await Employee.findOne().sort('-Employee_ID').exec();
         const newEmployeeId = lastEmployee && lastEmployee.Employee_ID ? parseInt(lastEmployee.Employee_ID) + 1 : 1;
         console.log(`New Employee_ID: ${newEmployeeId}`);
 
@@ -706,10 +706,11 @@ router.post('/addEmployee', upload.single('IMG'), async (req, res) => {
             Address_Staff: req.body.Address_Staff,
             Tel_Staff: req.body.Tel_Staff,
             ID_Card: req.body.ID_Card,
-            IMG: imagePath
+            IMG: base64String,
+            ImageTypeEmp: file.mimetype
         });
         const savedEmployee = await newEmployee.save().catch(err => console.error(err));
-        console.log(newEmployee);
+        console.log(savedEmployee);
         res.redirect('/staff');
     } catch (err) {
         console.error(err);
@@ -719,7 +720,7 @@ router.post('/addEmployee', upload.single('IMG'), async (req, res) => {
             res.status(500).send('Error processing request');
         }
     }
-})
+});
 
 
 router.get('/nav', (req, res) => {

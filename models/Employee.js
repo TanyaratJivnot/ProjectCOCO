@@ -45,6 +45,9 @@ const employeeSchema = new mongoose.Schema({
     IMG: {
         type: String,
     },
+    ImageTypeEmp: {
+        type: String,
+    },
 });
 
 employeeSchema.pre('save', function(next){
