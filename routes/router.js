@@ -26,14 +26,16 @@ const id_product = {
     'ป๊อปคอร์นขนาดกลาง': { Product_ID: 15 },
     'ป๊อปคอร์นขนาดเล็ก': { Product_ID: 16 }
 };
-const storage = multer.diskStorage({
+/* const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, path.join(__dirname, '../public/img'))  // ตำแหน่งเก็บไฟล์
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + '-' + file.originalname)  // ตั้งชื่อไฟล์ใหม่เพื่อหลีกเลี่ยงชื่อซ้ำ
     }
-});
+}); */
+// ตั้งค่า multer ให้เก็บไฟล์ในหน่วยความจำ
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 let employees_items;
@@ -523,17 +525,11 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
         return res.status(400).send('Please upload a file.');
     }
     try {
-        let base64String = '';  // สร้าง path สำหรับเก็บใน database
-        fs.readFile(file.path, (err, data) => {
-            if (err) {
-                console.error(err);
-                return res.status(500).send('Error processing request');
-            }
-            base64String = data.toString('base64');
-        });
-       
-        const categoryName = req.body.categoryName; // Ensure this matches the name attribute in your form
-        const { Category_ID, Type_ID } = categoryMappings[categoryName] || { Category_ID: 1, Type_ID: 1 }; // Default to some category if not found
+        // แปลงไฟล์เป็น Base64
+        const base64String = file.buffer.toString('base64');
+
+        const categoryName = req.body.categoryName;
+        const { Category_ID, Type_ID } = categoryMappings[categoryName] || { Category_ID: 1, Type_ID: 1 };
 
         // Generating a New Product_ID
         const lastProduct = await Product.findOne().sort('-Product_ID').exec();
@@ -556,22 +552,16 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
 
         // Saving Initial Count Information
         const newCountProduct = new Count_product({
-            CountsProduct_ID: newProductId, // Set to 'owner' as per your requirement
+            CountsProduct_ID: newProductId,
             Employee_ID: null,
             Product_ID: newProduct.Product_ID,
-            CountDate: new Date(), // Set to current date or another appropriate value
+            CountDate: new Date(),
             To_sell: 0,
             Count_sell: 0,
-            expire: '0', // Assuming this is a string as per your schema
-            remaining: req.body.remaining // Get this from the form submission
+            expire: '0',
+            remaining: req.body.remaining
         });
         await newCountProduct.save();
-
-        fs.unlink(file.path, (err) => {
-            if (err) {
-                console.error(err);
-            }
-        });
 
         // Redirect or send a response
         res.redirect('/stock'); // Redirect to a success page or another appropriate route
