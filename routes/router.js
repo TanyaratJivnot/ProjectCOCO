@@ -569,6 +569,12 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
         });
         await newCountProduct.save();
 
+        fs.unlink(file.path, (err) => {
+            if (err) {
+                console.error(err);
+            }
+        });
+
         // Redirect or send a response
         res.redirect('/stock'); // Redirect to a success page or another appropriate route
     } catch (err) {
