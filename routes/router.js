@@ -59,7 +59,7 @@ async function createNotifications(req) {
 
                 notificate_items.push({
                     name: employee.Username,
-                    img: employee.IMG,
+                    img: 'data:' + employee.ImageTypeEmp + ';base64,' + employee.IMG,
                     imgType: employee.ImageTypeEmp,
                     des: description,
                     time: timeString
@@ -76,10 +76,13 @@ async function createNotifications(req) {
             });
             req.session.mlNotified = true;
         }
+
+        req.session.notificate_items = notificate_items;
     } catch (error) {
         console.error('Error creating notifications:', error);
     }
 }
+
 
 
 let notificate_count = notificate_items.length;
