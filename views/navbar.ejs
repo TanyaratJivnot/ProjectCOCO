@@ -41,13 +41,7 @@
                                 <li class="success">
                                     <div class="notify_icon">
                                         <span class="icon">
-                                            <% if (item.img.startsWith('data:') || item.imgType === 'base64') { %>
-                                                <!-- แสดงรูปภาพจาก Base64 string -->
-                                                <img src="data:<%= item.imgType %>;base64,<%= item.img %>" alt="image" class="product-image">
-                                            <% } else { %>
-                                                <!-- แสดงรูปภาพจาก URL -->
-                                                <img src="<%= item.img %>" alt="image" class="product-image">
-                                            <% } %>
+                                            <img src="<%= item.img %>" alt="image" class="product-image">
                                         </span> 
                                     </div>
                                     <div class="notify_data">

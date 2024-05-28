@@ -59,7 +59,7 @@ async function createNotifications(req) {
 
                 notificate_items.push({
                     name: employee.Username,
-                    img: employee.IMG,
+                    img: 'data:' + employee.ImageTypeEmp + ';base64,' + employee.IMG,
                     imgType: employee.ImageTypeEmp,
                     des: description,
                     time: timeString
