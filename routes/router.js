@@ -492,8 +492,9 @@ router.get('/stock', async (req, res) => {
             list_products: mergedList,
             list_predict_products: global.list_predict_products.length > 0 ? global.list_predict_products : global.list_predict_undata,
             formattedDate: null,
+            employees_items,
             notificate_items,
-            notificate_count: notificate_items.length
+            notificate_count: notificate_items.length,
         });
     } catch (err) {
         console.error(err);
@@ -662,8 +663,9 @@ router.get('/staff', async (req, res) => {
 
         res.render('staff.ejs', {
             employees_items_find: employees_items_find,
+            employees_items,
             notificate_items,
-            notificate_count,
+            notificate_count: notificate_items.length,
             formattedDate: null
         });
     } catch (err) {
