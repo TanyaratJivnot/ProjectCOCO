@@ -554,13 +554,13 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
             DetailProduct: ""
         });
         await newProduct.save();
-
+        const countDate = moment().tz('Asia/Bangkok').format('YYYY-MM-DD');
         // Saving Initial Count Information
         const newCountProduct = new Count_product({
             CountsProduct_ID: newProductId,
             Employee_ID: null,
             Product_ID: newProduct.Product_ID,
-            CountDate: new Date(),
+            CountDate: countDate,
             To_sell: 0,
             Count_sell: 0,
             expire: '0',
