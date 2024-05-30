@@ -59,10 +59,10 @@ async function createNotifications(req) {
         for (const activity of loginActivities) {
             const employee = await Employee.findOne({ Employee_ID: activity.Employee_ID }).exec();
             if (employee) {
-                // แปลง Activity_Timestamp เป็นเวลาประเทศไทย
-                const timeString = moment(activity.Activity_Timestamp)
-                    .tz('Asia/Bangkok')
-                    .format('HH:mm');
+                // ตัดเอาเฉพาะเวลา (HH:mm) จาก Activity_Timestamp
+                const timeString = new Date(activity.Activity_Timestamp)
+                    .toISOString()
+                    .substr(11, 5);
 
                 // สร้างเงื่อนไขสำหรับ Activity_Type
                 let description = '';
@@ -88,7 +88,7 @@ async function createNotifications(req) {
                 name: 'ML',
                 img: '/img/logo_new.png',
                 des: 'ผลการทำนายการสั่งซื้อล่วงหน้า',
-                time: moment().tz('Asia/Bangkok').format('HH:mm')
+                time: new Date().toISOString().substr(11, 5)
             });
             req.session.mlNotified = true;
         }
@@ -99,6 +99,7 @@ async function createNotifications(req) {
         console.error('Error creating notifications:', error);
     }
 }
+
 let notificate_count = notificate_items.length;
 
 
