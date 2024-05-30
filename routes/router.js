@@ -355,8 +355,8 @@ router.get('/employeeSales', async (req, res) => {
     }
 }); 
 router.get('/remainingforDay', async (req, res) => {
-    const now = new Date();
-    const selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const { date } = req.query;  // รับวันที่จาก query string
+    const selectedDate = new Date(date);
     const formattedDate = selectedDate.toISOString().split('T')[0];
     console.log("Remaining selectedDate :", formattedDate);
     try {
