@@ -1,10 +1,11 @@
+// models/ActivityLogNew.js
 const mongoose = require('mongoose');
 
-const activityLogschema = new mongoose.Schema({
-    log_ID: {
-        type: Number,
+const activityLogNewSchema = new mongoose.Schema({
+    _id: {
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
-        unique: true,
+        auto: true,
     },
     Employee_ID: {
         type: mongoose.Schema.Types.Number,
@@ -20,4 +21,4 @@ const activityLogschema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('ActivityLog', activityLogschema);
+module.exports = mongoose.model('ActivityLogNew', activityLogNewSchema, 'activitylog');

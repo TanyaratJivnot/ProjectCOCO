@@ -4,12 +4,13 @@ const moment = require('moment-timezone');
 const router = express.Router();
 const path = require('path');
 const multer = require('multer');
+const mongoose = require('mongoose');
 const Owner = require('../models/Owner.js');
 const import_products = require('../models/import_Product.js');
 const Employee = require('../models/Employee.js');
 const Product = require('../models/Product.js');
 const Count_product = require('../models/Counts_Product');
-const ActivityLog = require('../models/ActivityLog');
+//const ActivityLogNew = require('../models/ActivityLog');
 const SalesOrder = require('../models/Sales_Order');
 const getWeatherData = require('../models/weater');
 const fs = require('fs');
@@ -43,19 +44,33 @@ let employees_items;
 let notificate_items = [];
 async function createNotifications(req) {
     try {
-        const loginActivities = await ActivityLog.find({
-            Activity_Type: { $in: ['login', 'logout'] }
-        }).exec();
+        const db = mongoose.connection.db;
+        const activityLogCollection = db.collection('activitylog');
+
+        // ดึงข้อมูลกิจกรรมการล็อกอินและล็อกเอาต์
+        const loginActivities = await activityLogCollection.find({
+            Activity_Type: { $in: ['login', 'log out'] }
+        }).toArray();
+
+        console.log("Login Activities:", loginActivities);  // ตรวจสอบข้อมูลที่ดึงมา
 
         notificate_items.length = 0;
 
         for (const activity of loginActivities) {
             const employee = await Employee.findOne({ Employee_ID: activity.Employee_ID }).exec();
             if (employee) {
+                // แปลง Activity_Timestamp เป็นเวลาประเทศไทย
                 const timeString = moment(activity.Activity_Timestamp)
                     .tz('Asia/Bangkok')
                     .format('HH:mm');
-                let description = activity.Activity_Type === 'login' ? 'เข้างาน' : 'ออกงาน';
+
+                // สร้างเงื่อนไขสำหรับ Activity_Type
+                let description = '';
+                if (activity.Activity_Type === 'login') {
+                    description = 'เข้างาน';
+                } else if (activity.Activity_Type === 'log out') {
+                    description = 'ออกงาน';
+                }
 
                 notificate_items.push({
                     name: employee.Username,
@@ -67,6 +82,7 @@ async function createNotifications(req) {
             }
         }
 
+        // ตรวจสอบและเพิ่มการแจ้งเตือน ML หากยังไม่มี
         if (!req.session.mlNotified) {
             notificate_items.unshift({
                 name: 'ML',
@@ -77,6 +93,7 @@ async function createNotifications(req) {
             req.session.mlNotified = true;
         }
 
+        // เก็บรายการแจ้งเตือนใน session
         req.session.notificate_items = notificate_items;
     } catch (error) {
         console.error('Error creating notifications:', error);
