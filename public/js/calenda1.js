@@ -400,15 +400,21 @@ function fetchDataremainingProduct(todayDate) {
   console.log("remaining for Day Url :", remainingforDay);
 
   fetch(remainingforDay)
-      .then(response => response.json())
+      .then(response => {
+          if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+      })
       .then(data => {
           console.log("remainingforDay:", data);
-          bargarph(data)
+          bargarph(data);
       })
       .catch(error => {
           console.error('Failed to fetch data:', error);
       });
 }
+
 function fetchDatapopularProduct(selectedDate,todayDate) {
   const dateToFetch = selectedDate || todayDate;
   console.log("Fetching data and popularProduct graph for:", dateToFetch);
