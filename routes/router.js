@@ -82,9 +82,6 @@ async function createNotifications(req) {
         console.error('Error creating notifications:', error);
     }
 }
-
-
-
 let notificate_count = notificate_items.length;
 
 
