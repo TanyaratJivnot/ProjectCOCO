@@ -362,7 +362,12 @@ function ProductPopularToday(todayDate) {
   const ProductPopularUrl = `${window.location.port == "" ?`https://${window.location.hostname}` :`http://${window.location.hostname}:${window.location.port}` }/productPopular?date=${todayDate}`;  // ตรวจสอบให้แน่ใจว่า URL ถูกต้อง
 
   fetch(ProductPopularUrl)
-  .then(response => response.json())
+  .then(response => {
+      if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+  })
   .then(data => {
       console.log("Data for ProductPopularToday:", data);
       if (data.length === 0 || !data[0].NameProduct) {
@@ -372,14 +377,15 @@ function ProductPopularToday(todayDate) {
       }
       const productName = data[0].NameProduct;  // ชื่อสินค้าที่ขายดีที่สุด
       const totalSales = data[0].totalSold;  // ยอดขายทั้งหมดของสินค้าที่ขายดีที่สุด
-      console.log("productName:",productName);
-      console.log("totalSale:",totalSales);
+      console.log("productName:", productName);
+      console.log("totalSale:", totalSales);
       document.getElementById("popularproductSales").innerText = `${productName} : ${totalSales} ชิ้น`;
   })
   .catch(error => {
       console.error('Error fetching popular product data:', error);
   });
 }
+
 
 /* 2-4 */
 function fetchDataRankSalesEmployee(selectedDate,todayDate) {

@@ -298,6 +298,8 @@ router.get('/productPopular', async (req, res) => {
             }
         ]);
 
+        console.log("Product popular data:", productPopularData); // ตรวจสอบข้อมูลที่ได้รับ
+
         // Check if data is empty or null, and handle accordingly
         if (!productPopularData.length || !productPopularData[0].NameProduct) {
             res.send([{ NameProduct: '--', totalSold: '--' }]);
