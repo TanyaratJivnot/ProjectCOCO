@@ -365,11 +365,16 @@ function ProductPopularToday(todayDate) {
   .then(response => response.json())
   .then(data => {
       console.log("Data for ProductPopularToday:", data);
-        const productName = data[0].NameProduct;  // ชื่อสินค้าที่ขายดีที่สุด
-        const totalSales = data[0].totalSold;  // ยอดขายทั้งหมดของสินค้าที่ขายดีที่สุด
-        console.log("productName:",productName);
-        console.log("totalSale:",totalSales);
-        document.getElementById("popularproductSales").innerText = `${productName} : ${totalSales} ชิ้น`;
+      if (data.length === 0 || !data[0].NameProduct) {
+          console.warn('No popular product data received');
+          document.getElementById("popularproductSales").innerText = `ไม่มีข้อมูล`;
+          return;
+      }
+      const productName = data[0].NameProduct;  // ชื่อสินค้าที่ขายดีที่สุด
+      const totalSales = data[0].totalSold;  // ยอดขายทั้งหมดของสินค้าที่ขายดีที่สุด
+      console.log("productName:",productName);
+      console.log("totalSale:",totalSales);
+      document.getElementById("popularproductSales").innerText = `${productName} : ${totalSales} ชิ้น`;
   })
   .catch(error => {
       console.error('Error fetching popular product data:', error);

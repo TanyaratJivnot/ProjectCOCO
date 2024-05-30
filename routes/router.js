@@ -252,8 +252,8 @@ router.get('/sales-today', async (req, res) => {
     }
 });
 router.get('/productPopular', async (req, res) => {
-    const now = new Date();
-    const selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const { date } = req.query;
+    const selectedDate = new Date(date);
     const formattedDate = selectedDate.toISOString().split('T')[0]; // YYYY-MM-DD
 
     console.log("Formatted selectedDate:", formattedDate); // Outputs date in YYYY-MM-DD format
