@@ -86,7 +86,7 @@ global.list_predict_undata = [
 
 const fetchPredictions = async () => {
     try {
-        const response = await axios.post('http://127.0.0.1:5000/predict');
+        const response = await axios.post('https://cocostore-ml-api-0254062f42fb.herokuapp.com/predict');
         global.list_predict_products = response.data;
 
         if (global.list_predict_products.length === 0) {
