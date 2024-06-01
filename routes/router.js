@@ -15,8 +15,7 @@ const SalesOrder = require('../models/Sales_Order');
 const getWeatherData = require('../models/weater');
 const fs = require('fs');
 const { body, validationResult } = require('express-validator');
-const redis = require('redis');
-const client = redis.createClient();
+
 
 
 const id_product = {
@@ -460,84 +459,77 @@ router.get('/productPopular5', async (req, res) => {
 
 /* product */
 router.get('/stock', async (req, res) => {
-    const searchTerm = req.query.searchTerm || '';
-    const sortQuery = req.query.sort || 'asc';
-    const sortOrder = sortQuery === 'asc' ? -1 : 1;
-    const cacheKey = `stock:${searchTerm}:${sortOrder}`;
+    const searchTerm = req.query.searchTerm;
+    const sortQuery = req.query.sort; // 'asc' or 'desc'
+    const sortOrder = sortQuery === 'asc' ? -1 : 1; // 1 for ascending, -1 for descending
 
-    // Try to get data from cache
-    client.get(cacheKey, async (err, cachedData) => {
-        if (err) {
-            console.error('Redis error:', err);
-            return res.status(500).send('Error fetching products');
+    console.log(`Search Term: ${searchTerm}`); // Debug: Log the search term
+
+    try {
+        // Build a query object based on the search term and excluding 'น้ำมะพร้าวปั่น'
+        let query = {
+            NameProduct: { $ne: 'มะพร้าวปั่น' } // Exclude 'น้ำมะพร้าวปั่น'
+        };
+        if (searchTerm && searchTerm.trim()) {
+            query["$and"] = [ // Use $and to combine conditions
+                { NameProduct: { $regex: new RegExp(searchTerm, 'i') } }
+                // Add more fields if you want to search by other criteria
+            ];
+            console.log("Running query:", JSON.stringify(query)); // Debug: Log the query
         }
 
-        if (cachedData) {
-            // If cached data exists, send it as response
-            const mergedList = JSON.parse(cachedData);
-            console.log(`Products Count from Cache: ${mergedList.length}`);
-            return res.render('stockPage.ejs', {
-                list_products: mergedList,
-                list_predict_products: global.list_predict_products.length > 0 ? global.list_predict_products : global.list_predict_undata,
-                formattedDate: null,
-                employees_items,
-                notificate_items,
-                notificate_count: notificate_items.length,
-            });
-        } else {
-            // If no cached data, fetch from database
-            try {
-                let query = {
-                    NameProduct: { $ne: 'มะพร้าวปั่น' }
-                };
-                if (searchTerm.trim()) {
-                    query["$and"] = [{ NameProduct: { $regex: new RegExp(searchTerm, 'i') } }];
-                }
+        // Fetch products based on the query
+        let list_products = await Product.find(query);
 
-                let list_products = await Product.find(query);
-                const counts = await Count_product.aggregate([
-                    { $sort: { CountDate: -1 } },
-                    { $group: { _id: "$Product_ID", remaining: { $first: "$remaining" } } },
-                    { $sort: { remaining: sortOrder } }
-                ]);
+        // Fetch the latest count for each product with sorting
+        const counts = await Count_product.aggregate([
+            { $sort: { CountDate: -1 } }, // Sort by CountDate descending
+            { $group: { _id: "$Product_ID", remaining: { $first: "$remaining" } } }, // Group by Product_ID and take the first (latest) remaining count
+            { $sort: { remaining: sortOrder } } // Sort by remaining count based on sortOrder
+        ]);
 
-                const countsMap = new Map(counts.map(count => [count._id.toString(), count.remaining]));
-                let mergedList = list_products.map(product => ({
-                    ...product.toObject(),
-                    remaining: countsMap.get(product.Product_ID.toString()) || 0
-                }));
+        // Convert counts to a map for easy lookup
+        const countsMap = new Map(counts.map(count => [count._id.toString(), count.remaining]));
 
-                mergedList = mergedList.sort((a, b) => sortOrder * (a.remaining - b.remaining));
+        // Merge product and count data with sorting
+        let mergedList = list_products.map(product => {
+            return {
+                ...product.toObject(),
+                remaining: countsMap.get(product.Product_ID.toString()) || 0 // Default to 0 if no count found
+            };
+        });
 
-                // Cache the result
-                client.setex(cacheKey, 3600, JSON.stringify(mergedList)); // Cache for 1 hour
+        // Sort the merged list based on remaining count
+        mergedList = mergedList.sort((a, b) => sortOrder * (a.remaining - b.remaining));
 
-                console.log(`Products Count Being Rendered: ${mergedList.length}`);
+        // Log the count of products being sent to the template
+        console.log(`Products Count Being Rendered: ${mergedList.length}`);
 
-                res.render('stockPage.ejs', {
-                    list_products: mergedList,
-                    list_predict_products: global.list_predict_products.length > 0 ? global.list_predict_products : global.list_predict_undata,
-                    formattedDate: null,
-                    employees_items,
-                    notificate_items,
-                    notificate_count: notificate_items.length,
-                });
-            } catch (err) {
-                console.error(err);
-                res.status(500).send('Error fetching products');
-            }
-        }
-    });
+
+        // Render the page with the merged list
+        res.render('stockPage.ejs', {
+            list_products: mergedList,
+            list_predict_products: global.list_predict_products.length > 0 ? global.list_predict_products : global.list_predict_undata,
+            formattedDate: null,
+            employees_items,
+            notificate_items,
+            notificate_count: notificate_items.length,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error fetching products');
+    }
 });
 
 
 /* del product */
 router.delete('/product/delete/:id', (req, res) => {
     const productId = req.params.id;
+    console.log("Product deletion route hit with ID:", productId);
+
     Product.findByIdAndDelete(productId)
         .then(() => {
-            // Clear related cache
-            client.del('stock:*');
+            // If related counts are successfully deleted, send success response
             res.json({ success: true });
         })
         .catch(err => {
@@ -548,22 +540,55 @@ router.delete('/product/delete/:id', (req, res) => {
 
 
 
-
 router.get('/Updatestock', (req, res) => {
     res.render('insert_product.ejs', { employees_items, notificate_items, notificate_count, formattedDate: null });
 })
 router.post('/addProduct', upload.single('productImage'), async (req, res) => {
-    // ... existing code ...
+    const file = req.file;
+    if (!file) {
+        return res.status(400).send('Please upload a file.');
+    }
     try {
-        // ... existing code ...
+        // แปลงไฟล์เป็น Base64
+        const base64String = file.buffer.toString('base64');
 
+        const categoryName = req.body.categoryName;
+        const { Category_ID, Type_ID } = categoryMappings[categoryName] || { Category_ID: 1, Type_ID: 1 };
+
+        // Generating a New Product_ID
+        const lastProduct = await Product.findOne().sort('-Product_ID').exec();
+        const newProductId = lastProduct && lastProduct.Product_ID ? parseInt(lastProduct.Product_ID) + 1 : 1;
+        console.log(`New Product_ID: ${newProductId}`);
+
+        // Saving Product Information
+        const newProduct = new Product({
+            Product_ID: newProductId,
+            Category_ID: Category_ID,
+            Type_ID: Type_ID,
+            Barcode: req.body.Barcode,
+            NameProduct: req.body.NameProduct,
+            PricePrduct: req.body.PricePrduct,
+            ImageProduct: base64String,
+            ImageTypeProduct: file.mimetype,
+            DetailProduct: ""
+        });
         await newProduct.save();
+        const countDate = moment().tz('Asia/Bangkok').format('YYYY-MM-DD');
+        // Saving Initial Count Information
+        const newCountProduct = new Count_product({
+            CountsProduct_ID: newProductId,
+            Employee_ID: null,
+            Product_ID: newProduct.Product_ID,
+            CountDate: countDate,
+            To_sell: 0,
+            Count_sell: 0,
+            expire: '0',
+            remaining: req.body.remaining
+        });
         await newCountProduct.save();
 
-        // Clear related cache
-        client.del('stock:*');
-
-        res.redirect('/stock');
+        // Redirect or send a response
+        res.redirect('/stock'); // Redirect to a success page or another appropriate route
     } catch (err) {
         console.error(err);
         res.status(500).send('Error processing request');
