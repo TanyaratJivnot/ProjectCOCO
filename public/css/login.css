@@ -95,3 +95,12 @@ p{
     margin-bottom: 5px;
     margin-top: 30px;
 }
+
+
+@media screen and (min-width: 992px) {
+    .login {
+        width: 650px;
+        padding: 100px;
+        height: 657px;
+    }
+}
