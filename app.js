@@ -9,6 +9,8 @@ const path = require('path');
 const fs = require('fs');
 const ejs = require('ejs');
 const axios = require('axios');
+const redis = require('redis');
+const client = redis.createClient();
 /* router some page */
 const router = require('./routes/router');
 /* database */
@@ -61,6 +63,9 @@ app.use('/sales',sales)
 app.use(express.static(path.join(__dirname,'public')));
 app.use(router);
 
+client.on('error', (err) => {
+    console.error('Redis error:', err);
+});
 setupWebSocket(server);
 
 const PORT = 3443;
