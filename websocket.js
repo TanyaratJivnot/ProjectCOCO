@@ -1,4 +1,4 @@
-const WebSocket = require('ws');
+/* const WebSocket = require('ws');
 
 let wss;
 
@@ -33,3 +33,4 @@ function broadcast(data) {
 }
 
 module.exports = { setupWebSocket, broadcast };
+ */

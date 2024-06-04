@@ -1,4 +1,4 @@
-const socket = new WebSocket('ws://' + window.location.host);
+/* const socket = new WebSocket('ws://' + window.location.host);
 
 socket.onmessage = function(event) {
     const data = JSON.parse(event.data);
@@ -44,3 +44,4 @@ socket.onmessage = function(event) {
 socket.onopen = function() {
     socket.send('Client ready');
 };
+ */
