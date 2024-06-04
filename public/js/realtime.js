@@ -1,4 +1,4 @@
-const ws = new WebSocket(`ws://${window.location.hostname}`);
+/* const ws = new WebSocket(`ws://${window.location.hostname}`);
         
 ws.onmessage = function(event) {
     const message = JSON.parse(event.data);
@@ -43,4 +43,4 @@ function updatePredictions(predictions) {
         `;
         predictionList.appendChild(card);
     });
-}
+} */
