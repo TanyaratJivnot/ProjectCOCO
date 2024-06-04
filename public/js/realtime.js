@@ -1,27 +1,26 @@
-/* const socket = new WebSocket('ws://' + window.location.host);
+const ws = new WebSocket(`ws://${window.location.hostname}`);
+        
+ws.onmessage = function(event) {
+    const message = JSON.parse(event.data);
+    if (message.type === 'prediction') {
+        updatePredictions(message.data);
+    }
+};
 
-socket.onmessage = function(event) {
-    const data = JSON.parse(event.data);
-    const predictionList = document.querySelector('.carousel1');
-
-    // Clear existing predictions
+function updatePredictions(predictions) {
+    const predictionList = document.getElementById('predictionList');
     predictionList.innerHTML = '';
-
-    // Add new predictions
-    data.forEach(product => {
-        const productCard = document.createElement('div');
-        productCard.className = 'card p-3';
-        productCard.id = 'block_item1';
-        productCard.innerHTML = `
+    predictions.forEach(product => {
+        const card = document.createElement('div');
+        card.className = 'card p-3';
+        card.id = 'block_item1';
+        card.innerHTML = `
             <div draggable="false">
                 <div class="row">
                     <div class="col">
                         <div class="row">
                             <div class="col">
                                 <i class="fa-brands fa-product-hunt" id="icon_P1"></i>
-                            </div>
-                            <div class="col d-flex justify-content-end">
-                                <i class="bi bi-plus-circle-fill" id="icon_add"></i>
                             </div>
                         </div>
                     </div>
@@ -31,17 +30,17 @@ socket.onmessage = function(event) {
                         <span style="color: #1E9168; font-size: 25px; font-weight: 700;">
                             ${product.NameProduct}
                         </span>
-                        <p style="color: #777; font-size: 20px; font-weight: 300;">${product.predicted_sales} ชิ้น</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col d-flex justify-content-end" id="data_b">
+                        <span style="color: #777; font-size: 25px; font-weight: 700;">
+                            ${product.predicted_sales} ชิ้น
+                        </span>
                     </div>
                 </div>
             </div>
         `;
-        predictionList.appendChild(productCard);
+        predictionList.appendChild(card);
     });
-};
-
-// Send a message to the server to notify that the client is ready
-socket.onopen = function() {
-    socket.send('Client ready');
-};
- */
+}
