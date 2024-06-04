@@ -5,7 +5,6 @@ const session = require('express-session');
 const { setupWebSocket, broadcast } = require('./websocket'); // นำเข้า WebSocket จากไฟล์ใหม่
 
 const https = require('https');
-const WebSocket = require('ws');
 const path = require('path');
 const fs = require('fs');
 const ejs = require('ejs');
@@ -36,7 +35,6 @@ mongoose.connect('mongodb+srv://coco:62BkDlEjFthts7s3@cluster0.91fcjua.mongodb.n
 
 const app = express();
 const server = require('http').createServer(app);
-const wss = new WebSocket.Server({ server });
 
 // Set up session middleware
 app.use(session({
@@ -86,13 +84,7 @@ global.list_predict_undata = [
     { NameProduct: '--', predicted_sales: '--' },
     { NameProduct: '--', predicted_sales: '--' }
 ];
-function broadcast(data) {
-    wss.clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify(data));
-        }
-    });
-}
+
 const fetchPredictions = async () => {
     try {
         const response = await axios.post('https://cocostore-ml-api-0254062f42fb.herokuapp.com/predict');
@@ -113,7 +105,7 @@ const fetchPredictions = async () => {
         });
 
         // Broadcast updated notifications
-        broadcast({ type: 'prediction', data: global.list_predict_products });
+        broadcast(notificate_items);
     } catch (error) {
         console.error('Error fetching predictions:', error);
     }
