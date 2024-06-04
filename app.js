@@ -105,7 +105,7 @@ const fetchPredictions = async () => {
         });
 
         // Broadcast updated notifications
-        broadcast(notificate_items);
+        broadcast({ type: 'prediction', data: global.list_predict_products });
     } catch (error) {
         console.error('Error fetching predictions:', error);
     }
