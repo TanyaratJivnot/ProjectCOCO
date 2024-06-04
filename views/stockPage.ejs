@@ -164,6 +164,13 @@
                                                         
                         </div>
                     </ul> 
+
+                    <!-- Pagination controls -->
+                    <div class="pagination">
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <a href="/stock?page=<%= i %>&limit=10" class="page-link"><%= i %></a>
+                        <% } %>
+                    </div>
             </div>
         </div>
         </div>

@@ -462,6 +462,8 @@ router.get('/stock', async (req, res) => {
     const searchTerm = req.query.searchTerm;
     const sortQuery = req.query.sort; // 'asc' or 'desc'
     const sortOrder = sortQuery === 'asc' ? -1 : 1; // 1 for ascending, -1 for descending
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10; // Number of products per page
 
     console.log(`Search Term: ${searchTerm}`); // Debug: Log the search term
 
@@ -479,7 +481,9 @@ router.get('/stock', async (req, res) => {
         }
 
         // Fetch products based on the query
-        let list_products = await Product.find(query);
+        let list_products = await Product.find(query)
+            .skip((page - 1) * limit)
+            .limit(limit);
 
         // Fetch the latest count for each product with sorting
         const counts = await Count_product.aggregate([
@@ -505,6 +509,8 @@ router.get('/stock', async (req, res) => {
         // Log the count of products being sent to the template
         console.log(`Products Count Being Rendered: ${mergedList.length}`);
 
+        // Fetch the total count of products for pagination
+        const totalProducts = await Product.countDocuments(query);
 
         // Render the page with the merged list
         res.render('stockPage.ejs', {
@@ -514,6 +520,8 @@ router.get('/stock', async (req, res) => {
             employees_items,
             notificate_items,
             notificate_count: notificate_items.length,
+            currentPage: page,
+            totalPages: Math.ceil(totalProducts / limit)
         });
     } catch (err) {
         console.error(err);

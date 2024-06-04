@@ -9,6 +9,7 @@ const path = require('path');
 const fs = require('fs');
 const ejs = require('ejs');
 const axios = require('axios');
+const compression = require('compression');
 /* router some page */
 const router = require('./routes/router');
 /* database */
@@ -60,7 +61,7 @@ app.use('/sales',sales)
 /* be for use router page */
 app.use(express.static(path.join(__dirname,'public')));
 app.use(router);
-
+app.use(compression());
 setupWebSocket(server);
 
 const PORT = 3443;
