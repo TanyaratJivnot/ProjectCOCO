@@ -522,6 +522,7 @@ router.get('/stock', async (req, res) => {
 });
 
 
+
 /* del product */
 router.delete('/product/delete/:id', (req, res) => {
     const productId = req.params.id;
