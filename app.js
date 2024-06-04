@@ -125,7 +125,8 @@ const fetchPredictions = async () => {
             time: moment().tz('Asia/Bangkok').format('HH:mm')
         });
 
-        // Broadcast updated notifications
+        // Broadcast updated notifications using SSE and WebSocket
+        sseBroadcast({ type: 'prediction', data: global.list_predict_products });
         broadcast({ type: 'prediction', data: global.list_predict_products });
     } catch (error) {
         console.error('Error fetching predictions:', error);
@@ -134,3 +135,6 @@ const fetchPredictions = async () => {
 
 // Fetch predictions at startup
 fetchPredictions();
+
+// Setup WebSocket server
+setupWebSocket(server);
