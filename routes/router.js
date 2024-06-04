@@ -49,9 +49,13 @@ async function createNotifications(req) {
         const db = mongoose.connection.db;
         const activityLogCollection = db.collection('activitylog');
 
-        // ดึงข้อมูลกิจกรรมการล็อกอินและล็อกเอาต์
+        // ดึงข้อมูลกิจกรรมการล็อกอินและล็อกเอาต์ของวันปัจจุบัน
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
         const loginActivities = await activityLogCollection.find({
-            Activity_Type: { $in: ['login', 'log out'] }
+            Activity_Type: { $in: ['login', 'log out'] },
+            Activity_Timestamp: { $gte: today }
         }).toArray();
 
         console.log("Login Activities:", loginActivities);  // ตรวจสอบข้อมูลที่ดึงมา
@@ -74,7 +78,7 @@ async function createNotifications(req) {
                     description = 'ออกงาน';
                 }
 
-                notificate_items.push({
+                notificate_items.unshift({
                     name: employee.Username,
                     img: 'data:' + employee.ImageTypeEmp + ';base64,' + employee.IMG,
                     imgType: employee.ImageTypeEmp,
@@ -101,6 +105,7 @@ async function createNotifications(req) {
         console.error('Error creating notifications:', error);
     }
 }
+
 
 let notificate_count = notificate_items.length;
 
@@ -468,6 +473,7 @@ router.get('/stock', async (req, res) => {
     console.log(`Search Term: ${searchTerm}`); // Debug: Log the search term
 
     try {
+        await createNotifications(req);
         // Build a query object based on the search term and excluding 'น้ำมะพร้าวปั่น'
         let query = {
             NameProduct: { $ne: 'มะพร้าวปั่น' } // Exclude 'น้ำมะพร้าวปั่น'
@@ -671,6 +677,7 @@ router.get('/staff', async (req, res) => {
     console.log(`Search Term: ${searchTerm}`); // Debug: Log the search term
 
     try {
+        await createNotifications(req);
         // Fetch all employees by default
         let employees_items_find = await Employee.find({});
 
