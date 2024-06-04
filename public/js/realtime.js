@@ -1,7 +1,6 @@
-const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-const ws = new WebSocket(`${protocol}://${window.location.host}`);
+const eventSource = new EventSource('/events');
 
-ws.onmessage = function(event) {
+eventSource.onmessage = function(event) {
     const message = JSON.parse(event.data);
     if (message.type === 'prediction') {
         updatePredictions(message.data);
