@@ -79,11 +79,6 @@ app.get('/events', (req, res) => {
     });
 });
 
-function broadcast(data) {
-    clients.forEach(client => {
-        client.write(`data: ${JSON.stringify(data)}\n\n`);
-    });
-}
 
 const PORT = 3443;
 app.listen(PORT, () => {
