@@ -64,6 +64,27 @@ app.use(router);
 app.use(compression());
 setupWebSocket(server);
 
+// SSE endpoint
+const clients = [];
+app.get('/events', (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders();
+
+    clients.push(res);
+
+    req.on('close', () => {
+        clients.splice(clients.indexOf(res), 1);
+    });
+});
+
+function broadcast(data) {
+    clients.forEach(client => {
+        client.write(`data: ${JSON.stringify(data)}\n\n`);
+    });
+}
+
 const PORT = 3443;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
