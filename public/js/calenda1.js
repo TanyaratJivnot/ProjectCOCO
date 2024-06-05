@@ -317,8 +317,10 @@ function fetchDataAndPlotGraph (selectedDate, todayDate) {
           if (data && data.length > 0) {
             const totalsales = data.map(item => item.salesTotalAmount).reduce((a, b) => a + b, 0);
             document.getElementById('Sales').innerText = `${totalsales} ฿`;
+            document.getElementById('toDaySales').innerText = `${totalsales} ฿`;
         } else {
-            document.getElementById('Sales').innerText = "0 ฿"; // Display 0 if there is no data or data is empty
+            document.getElementById('Sales').innerText = "0 ฿";
+            document.getElementById('toDaySales').innerText = "0 ฿";
         }
       })
       .catch(error => {
@@ -330,6 +332,7 @@ function fetchDataAndPlotGraph (selectedDate, todayDate) {
       .then(data => {
           console.log("Data received for graph:", data);
           plotGraph(data); // Plot graph using the received data
+
           
       })
       .catch(error => {
