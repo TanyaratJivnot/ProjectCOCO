@@ -567,19 +567,6 @@ router.get('/api-flutter-expril', async (req, res) => {
             return product.ImportDateExpire === currentDate;
         });
 
-        // Save expired products to the database
-        for (const product of expiredProducts) {
-            const existingProduct = await expired_products.findOne({
-                Product_ID: product.Product_ID,
-                ImportDate: product.ImportDate
-            });
-
-            if (!existingProduct) {
-                const newExpiredProduct = new expired_products(product);
-                await newExpiredProduct.save();
-            }
-        }
-
         res.json(expiredProducts);
     } catch (error) {
         res.status(500).json({ error: error.message });
