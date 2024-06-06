@@ -554,7 +554,7 @@ router.get('/api-flutter-expril', async (req, res) => {
         const expiredProducts = importedProducts.map(product => {
             const importDate = moment(product.ImportDate, 'YYYY-MM-DD');
             const expirationDays = product_exp[product.Product_ID] || 4; // Default to 4 days if not found
-            const importDateExpire = importDate.add(expirationDays, 'days').format('YYYY-MM-DD');
+            const importDateExpire = importDate.clone().add(expirationDays, 'days').format('YYYY-MM-DD');
 
             return {
                 Product_ID: product.Product_ID,
@@ -564,40 +564,13 @@ router.get('/api-flutter-expril', async (req, res) => {
             };
         }).filter(product => {
             const currentDate = moment().format('YYYY-MM-DD');
-            return product.ImportDateExpire <= currentDate;
+            return product.ImportDateExpire === currentDate;
         });
 
-        const expiredProductCounts = expiredProducts.reduce((acc, product) => {
-            if (!acc[product.Product_ID]) {
-                acc[product.Product_ID] = {
-                    Product_ID: product.Product_ID,
-                    ImportDateExpire: product.ImportDateExpire,
-                    Count: 0
-                };
-            }
-            acc[product.Product_ID].Count += product.Count;
-            return acc;
-        }, {});
-
-        res.json(Object.values(expiredProductCounts));
+        res.json(expiredProducts);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-});
-/* del product */
-router.delete('/product/delete/:id', (req, res) => {
-    const productId = req.params.id;
-    console.log("Product deletion route hit with ID:", productId);
-
-    Product.findByIdAndDelete(productId)
-        .then(() => {
-            // If related counts are successfully deleted, send success response
-            res.json({ success: true });
-        })
-        .catch(err => {
-            console.error(err);
-            res.status(500).json({ success: false, message: 'Error deleting product and related counts' });
-        });
 });
 
 
