@@ -567,12 +567,23 @@ router.get('/api-flutter-expril', async (req, res) => {
             return product.ImportDateExpire <= currentDate;
         });
 
-        res.json(expiredProducts);
+        const expiredProductCounts = expiredProducts.reduce((acc, product) => {
+            if (!acc[product.Product_ID]) {
+                acc[product.Product_ID] = {
+                    Product_ID: product.Product_ID,
+                    ImportDateExpire: product.ImportDateExpire,
+                    Count: 0
+                };
+            }
+            acc[product.Product_ID].Count += product.Count;
+            return acc;
+        }, {});
+
+        res.json(Object.values(expiredProductCounts));
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
-
 /* del product */
 router.delete('/product/delete/:id', (req, res) => {
     const productId = req.params.id;
