@@ -534,8 +534,44 @@ router.get('/stock', async (req, res) => {
         res.status(500).send('Error fetching products');
     }
 });
+const product_exp = {
+    'น้ำมะพร้าวแก้ว': 4,
+    'มะพร้าวลูก': 4,
+    'มะพร้าวขวด': 4,
+    'พุดดิ้งมะพร้าว': 4,
+    'เนื้อมะพร้าวครึ่งโล': 4,
+    'น้ำนมข้าวโพด': 4,
+    'ป๊อปคอร์นขนาดใหญ่': 4,
+    'ป๊อปคอร์นขนาดกลาง': 4,
+    'ป๊อปคอร์นขนาดเล็ก': 4
+};
+/* API สินค้าหมดอายุ */
+router.get('/api-flutter-expril', async (req, res) => {
+    try {
+        // Fetch all imported products
+        const importedProducts = await import_products.find({});
 
+        const expiredProducts = importedProducts.map(product => {
+            const importDate = moment(product.ImportDate, 'YYYY-MM-DD');
+            const expirationDays = product_exp[product.Product_ID] || 4; // Default to 4 days if not found
+            const importDateExpire = importDate.add(expirationDays, 'days').format('YYYY-MM-DD');
 
+            return {
+                Product_ID: product.Product_ID,
+                ImportDate: product.ImportDate,
+                ImportDateExpire: importDateExpire,
+                Count: product.Count
+            };
+        }).filter(product => {
+            const currentDate = moment().format('YYYY-MM-DD');
+            return product.ImportDateExpire <= currentDate;
+        });
+
+        res.json(expiredProducts);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 
 /* del product */
 router.delete('/product/delete/:id', (req, res) => {
