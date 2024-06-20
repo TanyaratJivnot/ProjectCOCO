@@ -138,9 +138,7 @@
                                     <div class="row" id="nav_p_item">
                                         <div class="col">
                                             <div class="row">
-                                                <!-- <div class="col d-flex align-items-center justify-content-center" id="name_T">
-                                                <img src="data:<%= item.ImageTypeProduct %>;base64,<%= item.ImageProduct %>" alt="product image" class="product-image"> 
-                                                </div> -->
+                                               
                                                 <div class="col d-flex align-items-center justify-content-center" id="name_T"><%= item.NameProduct %></div>
                                                 <div class="col d-flex align-items-center justify-content-center" id="price"><%= item.PricePrduct %></div>
                                                 <div class="col d-flex align-items-center justify-content-center" id="remaining"><%= item.remaining %></div> <!-- Display remaining count here -->
@@ -166,11 +164,11 @@
                     </ul> 
 
                     <!-- Pagination controls -->
-                    <div class="pagination">
+                    <!-- <div class="pagination">
                         <% for (let i = 1; i <= totalPages; i++) { %>
                             <a href="/stock?page=<%= i %>&limit=10" class="page-link"><%= i %></a>
                         <% } %>
-                    </div>
+                    </div> -->
             </div>
         </div>
         </div>

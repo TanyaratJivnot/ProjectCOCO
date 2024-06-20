@@ -658,17 +658,7 @@ router.post('/import_product', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while importing the products' });
     }
 });
-router.delete('/staff/delete/:id', (req, res) => {
-    console.log("Delete route hit with id:", req.params.id);
-    Product.findByIdAndDelete(req.params.id)
-        .then(() => {
-            res.json({ success: true });
-        })
-        .catch(err => {
-            console.error(err);
-            res.status(500).json({ success: false, message: 'Error deleting product' });
-        });
-});
+
 
 
 
@@ -709,7 +699,18 @@ router.get('/staff', async (req, res) => {
         res.status(500).send('Error fetching employees');
     }
 });
-
+/* del_stock */
+router.delete('/product/delete/:id', (req, res) => {
+    console.log("Delete route hit with id:", req.params.id);
+    Product.findByIdAndDelete(req.params.id)
+        .then(() => {
+            res.json({ success: true });
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({ success: false, message: 'Error deleting product' });
+        });
+});
 /* del_staff */
 router.delete('/staff/delete/:id', (req, res) => {
     console.log("Search route hit with term:", req.query.term);
