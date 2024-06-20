@@ -16,14 +16,6 @@ const getWeatherData = require('../models/weater');
 const fs = require('fs');
 const { body, validationResult } = require('express-validator');
 
-/* const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '../public/img'))  // ตำแหน่งเก็บไฟล์
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname)  // ตั้งชื่อไฟล์ใหม่เพื่อหลีกเลี่ยงชื่อซ้ำ
-    }
-}); */
 // ตั้งค่า multer ให้เก็บไฟล์ในหน่วยความจำ
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -138,7 +130,6 @@ router.get('/totalSale', async (req, res) => {
         let selectedDate = req.query.date;
         console.log("Selected home date:", selectedDate);
 
-        // Aggregate sales data for the selected date
         const salesData = await SalesOrder.aggregate([
             { $match: { Order_Date: selectedDate } },
             {
@@ -165,7 +156,6 @@ router.get('/totalSale', async (req, res) => {
 
         const totalSales = salesData.length > 0 ? salesData[0].salesTotalAmount : 0;
         console.log("Sales Total Amount:", totalSales);
-        // Render the home page
         res.send(salesData);
 
     } catch (error) {
@@ -179,12 +169,12 @@ router.get('/sales-data', async (req, res) => {
         let selectedDate = req.query.date;
         console.log(selectedDate);
         const salesData = await SalesOrder.aggregate([
-            { $match: { Order_Date: selectedDate } }, // Match the orders by selected date
+            { $match: { Order_Date: selectedDate } }, 
             {
                 $lookup: {
                     from: 'products',
-                    localField: 'Product_ID', // Field in SalesOrder
-                    foreignField: 'Product_ID', // Field in Product
+                    localField: 'Product_ID', 
+                    foreignField: 'Product_ID', 
                     as: 'productDetails'
                 }
             },
@@ -249,27 +239,27 @@ router.get('/sales-today', async (req, res) => {
 router.get('/productPopular', async (req, res) => {
     const { date } = req.query;
     const selectedDate = new Date(date);
-    const formattedDate = selectedDate.toISOString().split('T')[0]; // YYYY-MM-DD
+    const formattedDate = selectedDate.toISOString().split('T')[0]; 
 
-    console.log("Formatted selectedDate:", formattedDate); // Outputs date in YYYY-MM-DD format
+    console.log("Formatted selectedDate:", formattedDate); 
 
     try {
         const productPopularData = await SalesOrder.aggregate([
             {
-                $match: { Order_Date: formattedDate } // Ensure dates are compared correctly
+                $match: { Order_Date: formattedDate }
             },
             {
                 $group: {
-                    _id: '$Product_ID', // Group by Product ID
-                    totalSold: { $sum: '$Total_Amount' } // Sum total amount for each product
+                    _id: '$Product_ID', 
+                    totalSold: { $sum: '$Total_Amount' } 
                 }
             },
             {
-                $sort: { totalSold: -1 } // Sort by totalSold in descending order
+                $sort: { totalSold: -1 } 
             },
             {
                 $lookup: {
-                    from: 'products', // Assuming your products collection is named 'products'
+                    from: 'products', 
                     localField: '_id',
                     foreignField: 'Product_ID',
                     as: 'productDetails'
@@ -278,7 +268,7 @@ router.get('/productPopular', async (req, res) => {
             {
                 $unwind: {
                     path: '$productDetails',
-                    preserveNullAndEmptyArrays: true // Preserve documents even if 'productDetails' is missing
+                    preserveNullAndEmptyArrays: true 
                 }
             },
             {
@@ -289,13 +279,12 @@ router.get('/productPopular', async (req, res) => {
                 }
             },
             {
-                $limit: 1 // Limit to the top 1 most sold product
+                $limit: 1 
             }
         ]);
 
         console.log("Product popular data:", productPopularData); // ตรวจสอบข้อมูลที่ได้รับ
 
-        // Check if data is empty or null, and handle accordingly
         if (!productPopularData.length || !productPopularData[0].NameProduct) {
             res.send([{ NameProduct: '--', totalSold: '--' }]);
         } else {
@@ -307,11 +296,6 @@ router.get('/productPopular', async (req, res) => {
     }
 });
 router.get('/employeeSales', async (req, res) => {
-    /*  const now = new Date();
-     const selectedDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
-     //const formattedDate = selectedDate.toISOString().split('T')[0];
-     const formattedDate = "2023-02-08"; //test
-     console.log("employeeSales selectedDate :", formattedDate); */
     try {
         let formattedDate = req.query.date;
         console.log("employeeSales selectedDate :", formattedDate);
@@ -399,7 +383,7 @@ router.get('/productPopular5', async (req, res) => {
             {
                 $match: {
                     Order_Date: formattedDate,
-                    Total_Amount: { $gt: 1 } // Only include items with a quantity greater than 1
+                    Total_Amount: { $gt: 1 } 
                 }
             },
             {
@@ -453,42 +437,40 @@ router.get('/productPopular5', async (req, res) => {
 router.get('/stock', async (req, res) => {
     const searchTerm = req.query.searchTerm;
     const sortQuery = req.query.sort; // 'asc' or 'desc'
-    const sortOrder = sortQuery === 'asc' ? -1 : 1; // 1 for ascending, -1 for descending
+    const sortOrder = sortQuery === 'asc' ? -1 : 1; 
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10; // Number of products per page
+    const limit = parseInt(req.query.limit) || 10; 
 
-    console.log(`Search Term: ${searchTerm}`); // Debug: Log the search term
+    console.log(`Search Term: ${searchTerm}`); 
 
     try {
         await createNotifications(req);
-        // Build a query object based on the search term and excluding 'น้ำมะพร้าวปั่น'
+        
         let query = {
-            NameProduct: { $ne: 'มะพร้าวปั่น' } // Exclude 'น้ำมะพร้าวปั่น'
+            NameProduct: { $ne: 'มะพร้าวปั่น' } 
         };
         if (searchTerm && searchTerm.trim()) {
-            query["$and"] = [ // Use $and to combine conditions
+            query["$and"] = [ 
                 { NameProduct: { $regex: new RegExp(searchTerm, 'i') } }
-                // Add more fields if you want to search by other criteria
+               
             ];
-            console.log("Running query:", JSON.stringify(query)); // Debug: Log the query
+            console.log("Running query:", JSON.stringify(query)); 
         }
 
-        // Fetch products based on the query
         let list_products = await Product.find(query)
             .skip((page - 1) * limit)
             .limit(limit);
 
-        // Fetch the latest count for each product with sorting
         const counts = await Count_product.aggregate([
-            { $sort: { CountDate: -1 } }, // Sort by CountDate descending
-            { $group: { _id: "$Product_ID", remaining: { $first: "$remaining" } } }, // Group by Product_ID and take the first (latest) remaining count
-            { $sort: { remaining: sortOrder } } // Sort by remaining count based on sortOrder
+            { $sort: { CountDate: -1 } }, 
+            { $group: { _id: "$Product_ID", remaining: { $first: "$remaining" } } }, 
+            { $sort: { remaining: sortOrder } } 
         ]);
 
-        // Convert counts to a map for easy lookup
+        
         const countsMap = new Map(counts.map(count => [count._id.toString(), count.remaining]));
 
-        // Merge product and count data with sorting
+       
         let mergedList = list_products.map(product => {
             return {
                 ...product.toObject(),
@@ -496,16 +478,16 @@ router.get('/stock', async (req, res) => {
             };
         });
 
-        // Sort the merged list based on remaining count
+       
         mergedList = mergedList.sort((a, b) => sortOrder * (a.remaining - b.remaining));
 
-        // Log the count of products being sent to the template
+        
         console.log(`Products Count Being Rendered: ${mergedList.length}`);
 
-        // Fetch the total count of products for pagination
+        
         const totalProducts = await Product.countDocuments(query);
 
-        // Render the page with the merged list
+        
         res.render('stockPage.ejs', {
             list_products: mergedList,
             list_predict_products: global.list_predict_products.length > 0 ? global.list_predict_products : global.list_predict_undata,
@@ -532,34 +514,6 @@ const product_exp = {
     'ป๊อปคอร์นขนาดกลาง': 4,
     'ป๊อปคอร์นขนาดเล็ก': 4
 };
-/* API สินค้าหมดอายุ */
-router.get('/api-flutter-expril', async (req, res) => {
-    try {
-        // Fetch all imported products
-        const importedProducts = await import_products.find({});
-
-        const expiredProducts = importedProducts.map(product => {
-            const importDate = moment(product.ImportDate, 'YYYY-MM-DD');
-            const expirationDays = product_exp[product.Product_ID] || 4; // Default to 4 days if not found
-            const importDateExpire = importDate.clone().add(expirationDays, 'days').format('YYYY-MM-DD');
-
-            return {
-                Product_ID: product.Product_ID,
-                ImportDate: product.ImportDate,
-                ImportDateExpire: importDateExpire,
-                Count: product.Count
-            };
-        }).filter(product => {
-            const currentDate = moment().format('YYYY-MM-DD');
-            return product.ImportDateExpire === currentDate;
-        });
-
-        res.json(expiredProducts);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
 
 
 router.get('/Updatestock', (req, res) => {
@@ -577,12 +531,10 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
         const categoryName = req.body.categoryName;
         const { Category_ID, Type_ID } = categoryMappings[categoryName] || { Category_ID: 1, Type_ID: 1 };
 
-        // Generating a New Product_ID
         const lastProduct = await Product.findOne().sort('-Product_ID').exec();
         const newProductId = lastProduct && lastProduct.Product_ID ? parseInt(lastProduct.Product_ID) + 1 : 1;
         console.log(`New Product_ID: ${newProductId}`);
 
-        // Saving Product Information
         const newProduct = new Product({
             Product_ID: newProductId,
             Category_ID: Category_ID,
@@ -593,7 +545,7 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
             ImageProduct: base64String,
             ImageTypeProduct: file.mimetype,
             DetailProduct: "",
-            Day_expire: req.body.Day_expire, // Ensure this line is present
+            Day_expire: req.body.Day_expire, 
         });
         console.log(newProduct);
         await newProduct.save();
@@ -611,8 +563,7 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
         });
         await newCountProduct.save();
 
-        // Redirect or send a response
-        res.redirect('/stock'); // Redirect to a success page or another appropriate route
+        res.redirect('/stock'); 
     } catch (err) {
         console.error(err);
         res.status(500).send('Error processing request');
@@ -622,19 +573,7 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
 router.get('/Import_Product', (req, res) => {
     res.render('import_product.ejs', { employees_items, notificate_items, notificate_count, formattedDate: null });
 })
-/* const id_product = {
-    'น้ำมะพร้าวแก้ว': { Product_ID: 1 },
-    'มะพร้าวลูก': { Product_ID: 2 },
-    'มะพร้าวขวด': { Product_ID: 3 },
-    'พุดดิ้งมะพร้าว': { Product_ID: 4 },
-    'เนื้อมะพร้าวครึ่งโล': { Product_ID: 6 },
-    'น้ำนมข้าวโพด': { Product_ID: 10 },
-    'ป๊อปคอร์นขนาดใหญ่': { Product_ID: 14 },
-    'ป๊อปคอร์นขนาดกลาง': { Product_ID: 15 },
-    'ป๊อปคอร์นขนาดเล็ก': { Product_ID: 16 }
-}; */
 
-// Fetch product names and IDs
 async function fetchProductNamesAndIDs() {
     try {
         const products = await Product.find({}, 'NameProduct Product_ID').exec();
@@ -719,7 +658,17 @@ router.post('/import_product', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while importing the products' });
     }
 });
-
+router.delete('/staff/delete/:id', (req, res) => {
+    console.log("Delete route hit with id:", req.params.id);
+    Product.findByIdAndDelete(req.params.id)
+        .then(() => {
+            res.json({ success: true });
+        })
+        .catch(err => {
+            console.error(err);
+            res.status(500).json({ success: false, message: 'Error deleting product' });
+        });
+});
 
 
 
@@ -728,14 +677,14 @@ router.post('/import_product', async (req, res) => {
 /* staff */
 router.get('/staff', async (req, res) => {
     const searchTerm = req.query.searchTerm;
-    console.log(`Search Term: ${searchTerm}`); // Debug: Log the search term
+    console.log(`Search Term: ${searchTerm}`);
 
     try {
         await createNotifications(req);
-        // Fetch all employees by default
+
         let employees_items_find = await Employee.find({});
 
-        // If there's a search term and it's not empty, filter the employees
+        
         if (searchTerm && searchTerm.trim()) {
             const searchQuery = {
                 $or: [
@@ -747,9 +696,7 @@ router.get('/staff', async (req, res) => {
             employees_items_find = await Employee.find(searchQuery);
         }
 
-        // Log the count of employees being sent to the template
-        console.log(`Employees Count Being Rendered: ${employees_items_find.length}`);
-
+       
         res.render('staff.ejs', {
             employees_items_find: employees_items_find,
             employees_items,
