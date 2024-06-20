@@ -16,19 +16,6 @@ const getWeatherData = require('../models/weater');
 const fs = require('fs');
 const { body, validationResult } = require('express-validator');
 
-
-
-const id_product = {
-    'น้ำมะพร้าวแก้ว': { Product_ID: 1 },
-    'มะพร้าวลูก': { Product_ID: 2 },
-    'มะพร้าวขวด': { Product_ID: 3 },
-    'พุดดิ้งมะพร้าว': { Product_ID: 4 },
-    'เนื้อมะพร้าวครึ่งโล': { Product_ID: 6 },
-    'น้ำนมข้าวโพด': { Product_ID: 10 },
-    'ป๊อปคอร์นขนาดใหญ่': { Product_ID: 14 },
-    'ป๊อปคอร์นขนาดกลาง': { Product_ID: 15 },
-    'ป๊อปคอร์นขนาดเล็ก': { Product_ID: 16 }
-};
 /* const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, path.join(__dirname, '../public/img'))  // ตำแหน่งเก็บไฟล์
@@ -545,7 +532,6 @@ const product_exp = {
     'ป๊อปคอร์นขนาดกลาง': 4,
     'ป๊อปคอร์นขนาดเล็ก': 4
 };
-
 /* API สินค้าหมดอายุ */
 router.get('/api-flutter-expril', async (req, res) => {
     try {
@@ -575,6 +561,7 @@ router.get('/api-flutter-expril', async (req, res) => {
 });
 
 
+
 router.get('/Updatestock', (req, res) => {
     res.render('insert_product.ejs', { employees_items, notificate_items, notificate_count, formattedDate: null });
 })
@@ -584,7 +571,7 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
         return res.status(400).send('Please upload a file.');
     }
     try {
-        // แปลงไฟล์เป็น Base64
+        // Convert file to Base64
         const base64String = file.buffer.toString('base64');
 
         const categoryName = req.body.categoryName;
@@ -605,8 +592,10 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
             PricePrduct: req.body.PricePrduct,
             ImageProduct: base64String,
             ImageTypeProduct: file.mimetype,
-            DetailProduct: ""
+            DetailProduct: "",
+            Day_expire: req.body.Day_expire, // Ensure this line is present
         });
+        console.log(newProduct);
         await newProduct.save();
         const countDate = moment().tz('Asia/Bangkok').format('YYYY-MM-DD');
         // Saving Initial Count Information
@@ -617,8 +606,8 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
             CountDate: countDate,
             To_sell: 0,
             Count_sell: 0,
-            expire: '0',
-            remaining: req.body.remaining
+            expire: 0, 
+            remaining: req.body.remaining,
         });
         await newCountProduct.save();
 
@@ -633,6 +622,46 @@ router.post('/addProduct', upload.single('productImage'), async (req, res) => {
 router.get('/Import_Product', (req, res) => {
     res.render('import_product.ejs', { employees_items, notificate_items, notificate_count, formattedDate: null });
 })
+/* const id_product = {
+    'น้ำมะพร้าวแก้ว': { Product_ID: 1 },
+    'มะพร้าวลูก': { Product_ID: 2 },
+    'มะพร้าวขวด': { Product_ID: 3 },
+    'พุดดิ้งมะพร้าว': { Product_ID: 4 },
+    'เนื้อมะพร้าวครึ่งโล': { Product_ID: 6 },
+    'น้ำนมข้าวโพด': { Product_ID: 10 },
+    'ป๊อปคอร์นขนาดใหญ่': { Product_ID: 14 },
+    'ป๊อปคอร์นขนาดกลาง': { Product_ID: 15 },
+    'ป๊อปคอร์นขนาดเล็ก': { Product_ID: 16 }
+}; */
+
+// Fetch product names and IDs
+async function fetchProductNamesAndIDs() {
+    try {
+        const products = await Product.find({}, 'NameProduct Product_ID').exec();
+        const productMappings = {};
+        products.forEach(product => {
+            productMappings[product.NameProduct] = { Product_ID: product.Product_ID };
+        });
+        return productMappings;
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        return {};
+    }
+}
+
+router.get('/productMappings', async (req, res) => {
+    try {
+        const products = await Product.find({}, 'NameProduct Product_ID').exec();
+        const productMappings = {};
+        products.forEach(product => {
+            productMappings[product.NameProduct] = { Product_ID: product.Product_ID };
+        });
+        res.json(productMappings);
+    } catch (error) {
+        console.error('Error fetching products:', error);
+        res.status(500).json({ error: 'Failed to fetch product mappings' });
+    }
+});
 
 router.post('/import_product', async (req, res) => {
     try {
@@ -646,8 +675,7 @@ router.post('/import_product', async (req, res) => {
             }
         }
 
-        // ใช้ moment-timezone เพื่อกำหนดวันที่ในรูปแบบ 'YYYY-MM-DD'
-        const importDate = moment().tz('Asia/Bangkok').format('YYYY-MM-DD');
+        const productMappings = await fetchProductNamesAndIDs();
 
         const newImportProducts = [];
 
@@ -655,30 +683,36 @@ router.post('/import_product', async (req, res) => {
             const productName = productNames[i];
             const countSell = countSells[i];
 
-            // หา Product_ID จากชื่อสินค้า
-            const product = id_product[productName];
+            const product = productMappings[productName];
             if (!product) {
                 return res.status(400).json({ error: `Product not found: ${productName}` });
             }
 
-            // สร้างรายการสินค้านำเข้าใหม่
+            const importDate = moment().tz('Asia/Bangkok').format('YYYY-MM-DD');
+            const importTime = moment().tz('Asia/Bangkok').format('HH:mm');
+
+            const expirationDate = product.Day_expire
+                ? moment().tz('Asia/Bangkok').add(product.Day_expire, 'days').format('YYYY-MM-DD')
+                : moment().tz('Asia/Bangkok').add(5, 'minutes').format('YYYY-MM-DD');
+            const expirationTime = moment().tz('Asia/Bangkok').format('HH:mm');
+
             const newImportProduct = new import_products({
-                Employee_ID: 1, // กำหนดค่า Employee_ID เป็น 1
+                Employee_ID: 1, // Static Employee_ID for example, replace with actual logic
                 Product_ID: product.Product_ID,
                 ImportDate: importDate,
-                Count: countSell
+                ImportTime: importTime,
+                Count: countSell,
+                ExpirationDate: expirationDate,
+                ExpirationTime: expirationTime
             });
 
             newImportProducts.push(newImportProduct);
         }
 
-        // พิมพ์ข้อมูลเพื่อการตรวจสอบ
         console.log('Products to be inserted:', newImportProducts);
 
-        // บันทึกลงฐานข้อมูลพร้อมกัน
         await import_products.insertMany(newImportProducts);
 
-        // Redirect ไปที่ /stock หลังจากบันทึกเสร็จ
         res.redirect('/stock');
     } catch (error) {
         console.error(error);

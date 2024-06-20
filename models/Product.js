@@ -32,6 +32,9 @@ const productSchema = new mongoose.Schema({
     ImageTypeProduct: {
         type: String,
     },
+    Day_expire: {
+        type: Number,
+    },
     DetailProduct: {
         type: String,
     },
